@@ -71,9 +71,9 @@ func main() {
 	// but it would be nice to be able to inspect the current installed version
 	// of this executable.
 	if len(os.Args) > 1 && os.Args[1] == "-gmv" {
-		fmt.Println(version)
-		fmt.Println(commit)
-		fmt.Println(date)
+		fmt.Println("Version: " + version)
+		fmt.Println("Commit Ref: " + commit)
+		fmt.Println("Build Timestamp: " + date)
 		os.Exit(0)
 	}
 
