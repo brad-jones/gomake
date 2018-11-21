@@ -26,7 +26,7 @@ test: restore generate
 	go test -race -cover ./generator -covermode=atomic;
 	go tool cover -html=./generator/generator.coverprofile;
 
-release:
+release: generate
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./dist/gomake_linux_amd64 ./cmd/gomake/;
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o ./dist/gomake_darwin_amd64 ./cmd/gomake/;
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o ./dist/gomake_windows_amd64.exe ./cmd/gomake/;
