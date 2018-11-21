@@ -53,6 +53,7 @@ jobs:
       - restore_cache:
           key: go-dependencies-{{ checksum "go.sum" }}
       - run: go mod download
+      - run: go install github.com/phogolabs/parcello/cmd/parcello
       - run: yarn semantic-release
 
 workflows:
