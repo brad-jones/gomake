@@ -11,7 +11,7 @@ plugins:
   # Build the release artifacts
   # This includes tarballs, rpms/debs, docker images, etc
   - - "@semantic-release/exec"
-    - prepareCmd: "make release VERSION=${nextRelease.version} COMMIT=${commits.commit.long} DATE=${Date.now()}"
+    - prepareCmd: "make release VERSION=${nextRelease.version} COMMIT=${commits[0].commit.long} DATE=${Date.now()}"
 
   # Commit CHANGELOG.md back to repo
   - - "@semantic-release/git"
