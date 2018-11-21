@@ -9,8 +9,9 @@ import (
 	"github.com/fatih/color"
 )
 
-// Injected by goreleaser
-// see: https://goreleaser.com/environment/
+// Injected by ldflags
+// Makefile release target does this
+// see: https://stackoverflow.com/questions/11354518
 var (
 	version = "0.0.0"
 	commit  = "dev"
