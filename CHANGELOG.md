@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/brad-jones/gomake/compare/v1.0.1...v1.0.2) (2018-11-21)
+
+
+### Bug Fixes
+
+* **gmv:** display titles for the version information ([84017ab](https://github.com/brad-jones/gomake/commit/84017ab))
+
 ## [1.0.1](https://github.com/brad-jones/gomake/compare/v1.0.0...v1.0.1) (2018-11-21)
 
 
