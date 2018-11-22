@@ -1,0 +1,112 @@
+# Set default image to use for out jobs
+os: linux
+sudo: false
+dist: xenial
+language: minimal
+
+# Prevent double test runs for PRs
+branches: { only: [ master ] }
+
+env:
+  - GO111MODULE=on
+
+# Set the order of the stages
+stages:
+  - lint
+  - test
+  - release
+
+jobs:
+  include:
+
+    - stage: lint
+      name: Running CommitLint
+      language: node_js
+      node_js: "11.2.0"
+      cache: yarn
+      before_install:
+        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.12.3
+        - export PATH="$HOME/.yarn/bin:$PATH"
+      script: commitlint-travis
+
+    - stage: test
+      name: linux golang:1.11.2 Unit Tests
+      language: go
+      go: "1.11.2"
+      cache:
+        directories:
+          - /go/pkg
+      install:
+        - go mod download
+      script: go test -cover ./generator -covermode=atomic -coverprofile=coverage.txt
+      after_success: bash <(curl -s https://codecov.io/bash)
+
+    - stage: test
+      name: linux golang:tip Unit Tests
+      language: go
+      go: tip
+      cache:
+        directories:
+          - /go/pkg
+      install:
+        - go mod download
+      script: go test ./generator || true
+
+    - stage: test
+      name: darwin golang:1.11.2 Unit Tests
+      os: osx
+      language: go
+      go: "1.11.2"
+      cache:
+        directories:
+          - /go/pkg
+      install:
+        - go mod download
+      script: go test ./generator || true
+
+    - stage: test
+      name: windows golang:1.11.2 Unit Tests
+      os: windows
+      language: go
+      go: "1.11.2"
+      cache:
+        directories:
+          - /go/pkg
+      install:
+        - go mod download
+      script: go test ./generator || true
+
+    - stage: release
+      name: Run Semantic Release
+      script: echo "TODO";
+
+#go:
+#  - "1.11"
+#  - tip
+#
+#os:
+#  - linux
+#  - osx
+#  - windows
+#
+#dist: xenial
+#
+#addons:
+#  apt:
+#    packages:
+#      - node
+#
+#matrix:
+#  fast_finish: true
+#  allow_failures:
+#    - go: tip
+#
+#
+#
+#before_install:
+#  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install node -y; fi
+#  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install mingw -y; export PATH=/c/tools/mingw64/bin:"$PATH"; fi
+
+
+
+# https://github.com/NSWSESMembers/availability-poc/blob/master/.travis.yml
