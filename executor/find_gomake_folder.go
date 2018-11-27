@@ -1,6 +1,7 @@
 package executor
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -11,6 +12,7 @@ func findGomakeFolder(dir string) (string, error) {
 		return goMakeFolder, nil
 	}
 	// TODO: Consider root detection for Windows
+	fmt.Println("DIR: " + dir)
 	if dir == "/" {
 		return "", &ErrReachedRootOfFs{}
 	}
