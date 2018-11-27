@@ -64,31 +64,3 @@ func Execute(dir string, args ...string) error {
 	newArgs = append(newArgs, args...)
 	return syscall.Exec(exePath, newArgs, os.Environ())
 }
-
-func findGomakeFolder(dir string) (string, error) {
-	goMakeFolder := filepath.Join(dir, ".gomake")
-	if _, err := os.Stat(goMakeFolder); err == nil {
-		return goMakeFolder, nil
-	}
-	// TODO: Consider root detection for Windows
-	if dir == "/" {
-		return "", &ErrReachedRootOfFs{}
-	}
-	parentDir := filepath.Join(dir, "..")
-	return findGomakeFolder(parentDir)
-}
-
-// ErrReachedRootOfFs is returned when findGoMakeFolder can not find a
-// valid ".gomake" folder after having recursed all the way up to the
-// root of filesystem.
-type ErrReachedRootOfFs struct {
-	innerError error
-}
-
-func (e *ErrReachedRootOfFs) Error() string {
-	return "gomake: failed to find valid '.gomake' folder, reached root of filesystem"
-}
-
-func (e *ErrReachedRootOfFs) InnerError() error {
-	return e.innerError
-}
