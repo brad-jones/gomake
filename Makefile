@@ -23,8 +23,10 @@ build-ci-images:
 	docker push bradjones/gomake-ci-primary:latest;
 
 test: restore generate
-	go test -race -cover ./generator -covermode=atomic;
+	go test -race -coverprofile ./generator/generator.coverprofile -covermode=atomic ./generator;
+	go test -race -coverprofile ./executor/executor.coverprofile -covermode=atomic ./executor;
 	go tool cover -html=./generator/generator.coverprofile;
+	go tool cover -html=./executor/executor.coverprofile;
 
 release: generate
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
