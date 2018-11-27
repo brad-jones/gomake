@@ -1,12 +1,15 @@
-# Set default image to use for out jobs
+# Set defaults to use for our jobs
 os: linux
 sudo: false
 dist: xenial
 language: minimal
+osx_image: xcode10.1
 
 # Prevent double test runs for PRs
 branches: { only: [ master ] }
 
+# Travis checks out our code into a gopath and thus golang by default assumes
+# it is a non modules based project, we just need to tell golang the opposite.
 env:
   - GO111MODULE=on
 
@@ -19,6 +22,8 @@ stages:
 jobs:
   include:
 
+    # LINT STAGE
+    # --------------------------------------------------------------------------
     - stage: lint
       name: Running CommitLint
       language: node_js
@@ -29,8 +34,10 @@ jobs:
         - export PATH="$HOME/.yarn/bin:$PATH"
       script: commitlint-travis
 
+    # TEST STAGE
+    # --------------------------------------------------------------------------
     - stage: test
-      name: linux golang:1.11.2 Unit Tests
+      name: linux golang:1.11.2 tests
       language: go
       go: "1.11.2"
       cache:
@@ -38,8 +45,12 @@ jobs:
           - /go/pkg
       install:
         - go mod download
-      script: go test -cover ./generator -covermode=atomic -coverprofile=coverage.txt
-      after_success: bash <(curl -s https://codecov.io/bash)
+      script:
+        - go test -race -cover -covermode=atomic -coverprofile=generator.cover ./generator
+        - go test -race -cover -covermode=atomic -coverprofile=executor.cover ./executor
+      after_success:
+        - cat generator.cover >> coverage.txt && cat executor.cover >> coverage.txt
+        - bash <(curl -s https://codecov.io/bash)
 
     - stage: test
       name: linux golang:tip Unit Tests
@@ -50,7 +61,9 @@ jobs:
           - /go/pkg
       install:
         - go mod download
-      script: go test ./generator || true
+      script:
+        - go test -race ./generator || true
+        - go test -race ./executor || true
 
     - stage: test
       name: darwin golang:1.11.2 Unit Tests
@@ -62,7 +75,9 @@ jobs:
           - /go/pkg
       install:
         - go mod download
-      script: go test ./generator || true
+      script:
+        - go test -race ./generator || true
+        - go test -race ./executor || true
 
     - stage: test
       name: windows golang:1.11.2 Unit Tests
@@ -74,8 +89,12 @@ jobs:
           - /go/pkg
       install:
         - go mod download
-      script: go test ./generator || true
+      script:
+        - go test -race ./generator || true
+        - go test -race ./executor || true
 
+    # RELEASE STAGE
+    # --------------------------------------------------------------------------
     - stage: release
       name: Run Semantic Release
       script: echo "TODO";

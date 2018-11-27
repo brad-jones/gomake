@@ -40,7 +40,9 @@ jobs:
           key: go-dependencies-{{ checksum "go.sum" }}
           paths:
             - /go/pkg
-      - run: go test -cover ./generator -covermode=atomic -coverprofile=coverage.txt
+      - run: go test -cover -covermode=atomic -coverprofile=generator.cover ./generator
+      - run: go test -cover -covermode=atomic -coverprofile=executor.cover ./executor
+      - run: cat generator.cover >> coverage.txt && cat executor.cover >> coverage.txt
       - run: bash <(curl -s https://codecov.io/bash)
 
   release:
