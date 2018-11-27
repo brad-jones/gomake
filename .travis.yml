@@ -76,8 +76,8 @@ jobs:
       install:
         - go mod download
       script:
-        - go test -race ./generator || true
-        - go test -race ./executor || true
+        - go test -race ./generator
+        - go test -race ./executor
 
     - stage: test
       name: windows golang:1.11.2 Unit Tests
@@ -90,8 +90,8 @@ jobs:
       install:
         - go mod download
       script:
-        - go test -race ./generator || true
-        - go test -race ./executor || true
+        - go test -race ./generator
+        - go test -race ./executor
 
     # RELEASE STAGE
     # --------------------------------------------------------------------------
