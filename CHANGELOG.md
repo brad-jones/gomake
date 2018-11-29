@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/brad-jones/gomake/compare/v1.0.2...v1.0.3) (2018-11-29)
+
+
+### Bug Fixes
+
+* **findgomakefolder:** add windows root file system detection ([7fdda94](https://github.com/brad-jones/gomake/commit/7fdda94))
+
 ## [1.0.2](https://github.com/brad-jones/gomake/compare/v1.0.1...v1.0.2) (2018-11-21)
 
 
