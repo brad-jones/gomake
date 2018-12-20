@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/brad-jones/gomake/compare/v1.0.4...v1.1.0) (2018-12-20)
+
+
+### Bug Fixes
+
+* **quotes:** now get escaped correctly when used in function doc blocks ([793b7cd](https://github.com/brad-jones/gomake/commit/793b7cd))
+
+
+### Features
+
+* **use-short-version:** these variables can now be set by a makefile ([3d913ae](https://github.com/brad-jones/gomake/commit/3d913ae))
+
 ## [1.0.4](https://github.com/brad-jones/gomake/compare/v1.0.3...v1.0.4) (2018-12-20)
 
 
