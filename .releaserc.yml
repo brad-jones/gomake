@@ -26,4 +26,3 @@ plugins:
 
   # Run final publish tasks, such as docker push
   - - "@semantic-release/exec"
-    - publishCmd: "make publish"
