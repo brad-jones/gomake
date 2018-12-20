@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/brad-jones/gomake/compare/v1.1.0...v1.2.0) (2018-12-20)
+
+
+### Features
+
+* **runtime:** added some helpers that make writing tasks easier ([5fc98b5](https://github.com/brad-jones/gomake/commit/5fc98b5))
+
 # [1.1.0](https://github.com/brad-jones/gomake/compare/v1.0.4...v1.1.0) (2018-12-20)
 
 
