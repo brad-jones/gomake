@@ -97,4 +97,8 @@ func Noerror() {
 
 }
 
-// TODO: comments with quotes fail
+// Cmdwithquotes is a test case to prove gomake can handle quotes in comments.
+// For example like "this" and also like 'this'.
+func Cmdwithquotes() {
+
+}

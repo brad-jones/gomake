@@ -39,6 +39,7 @@ func walkCmdTree(tree cmdTree, parentCmdName string) ([]*tplCommand, error) {
 		if branch.leaf.Doc != nil {
 			for k, v := range branch.leaf.Doc.List {
 				line := strings.TrimLeft(v.Text, "// ")
+				line = strings.Replace(line, "\"", "\\\"", -1)
 				if k == 0 {
 					cmd.ShortDescription = line
 				} else {
