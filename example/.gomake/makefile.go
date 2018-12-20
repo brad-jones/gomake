@@ -5,6 +5,11 @@ import (
 	"fmt"
 	"net"
 	"time"
+
+	"github.com/brad-jones/gomake/runtime/exec"
+	"github.com/brad-jones/gomake/runtime/print"
+	"github.com/brad-jones/gomake/runtime/run"
+	"github.com/fatih/color"
 )
 
 // Use can optionally be set to customise the generated usage text.
@@ -58,6 +63,7 @@ func Validparms(
 
 // Sub is an example parent command
 func Sub() error {
+	fmt.Println("Sub says hi")
 	return nil
 }
 
@@ -71,6 +77,7 @@ func SubCmd() error {
 // Use snake case if your command has many words but should not be considered a
 // child command.
 func Hyphenated_cmd() error {
+	fmt.Println("Hyphenated_cmd says hi")
 	return nil
 }
 
@@ -79,6 +86,7 @@ func Hyphenated_cmd() error {
 // Yeah I know it's a pretty ugly function name but I don't expect this to be
 // used as much as sub commands.
 func Hyphenated_cmdFoo_bar() error {
+	fmt.Println("Hyphenated_cmdFoo_bar says hi")
 	return nil
 }
 
@@ -87,12 +95,14 @@ func Hyphenated_cmdFoo_bar() error {
 // Flag descriptions must only span a single line, this is not part of
 // the --foo description.
 func Documentedflag(foo string) error {
+	fmt.Println("Documentedflag = " + foo)
 	return nil
 }
 
 // Shortflag is an example of how to set a shortned alias against a parameter
 // --foo, -f: Is an example parameter, with a short alias
 func Shortflag(foo string) error {
+	fmt.Println("Shortflag = " + foo)
 	return nil
 }
 
@@ -105,6 +115,8 @@ func Cmd_with_context(ctx context.Context) error {
 }
 
 // Noerror is also a valid command
+// But discouraged as errors should be handled gracefully instead of panicing.
+// Also makes it difficult to use with thing like "run.Serial/Parallel".
 func Noerror() {
 
 }
@@ -113,4 +125,25 @@ func Noerror() {
 // For example like "this" and also like 'this'.
 func Cmdwithquotes() {
 
+}
+
+// RuntimeExample is an example of using the gomake/runtime library
+// This is of course completely optional and what you put inside your
+// gomake functions is totally up to you, it's just go afterall./
+func RuntimeExample() error {
+	return run.Serial(
+		func() error { print.H1("Start", color.FgRed); return nil },
+		SubCmd,
+		Hyphenated_cmdFoo_bar,
+		func() error { return Shortflag("bar") },
+		func() error { print.H2("These next commands will run asynchronously"); return nil },
+		run.Parallel(
+			Hyphenated_cmd,
+			Sub,
+			func() error { return Documentedflag("baz") },
+			func() error { return exec.RunPrefixed("google1", "ping", "-c", "4", "8.8.8.8") },
+			func() error { return exec.RunPrefixed("google2", "ping", "-c", "4", "8.8.4.4") },
+		),
+		func() error { print.H1("End", color.FgGreen); return nil },
+	)()
 }
