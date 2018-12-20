@@ -34,9 +34,8 @@ func main() {
 		}
 	})()
 
-	// TODO: Allow usage and top level description to be overwitten
-	rootCmd.Use = "gomake"
-	rootCmd.Short = "Makefile written in golang"
+	rootCmd.Use = "{{.Use}}"
+	rootCmd.Short = "{{.Short}}"
 
 	// Inject the version of the built task runner, as a DevOps guy supporting a
 	// bunch of other Developers, I find it very useful to be to know exactly

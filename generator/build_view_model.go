@@ -2,9 +2,14 @@ package generator
 
 import (
 	"go/ast"
+	"strings"
+
+	git "gopkg.in/src-d/go-git.v4"
 )
 
 type tplViewModel struct {
+	Use       string
+	Short     string
 	Version   string
 	CacheHash string
 	Commands  []*tplCommand
@@ -47,14 +52,39 @@ func buildViewModel(nodes *ast.Package) (*tplViewModel, error) {
 		return nil, err
 	}
 
-	/*
-		TODO: Inject the current git commit hash of the project that contains
-		the .gomake folder. As a DevOps guy supporting a bunch of other Developers,
-		I find it very useful to be to know exactly which version of the task runner
-		someone is using. As there can be many different versions across
-		different branches, etc.
-	*/
-	viewModel.Version = "0.0.0"
+	ast.Inspect(nodes, func(node ast.Node) bool {
+		switch n := node.(type) {
+		case *ast.ValueSpec:
+			switch n.Names[0].Name {
+			case "Use":
+				viewModel.Use = strings.Trim(n.Values[0].(*ast.BasicLit).Value, "\"")
+			case "Short":
+				viewModel.Short = strings.Trim(n.Values[0].(*ast.BasicLit).Value, "\"")
+			case "Version":
+				viewModel.Version = strings.Trim(n.Values[0].(*ast.BasicLit).Value, "\"")
+			}
+		}
+		return true
+	})
+
+	if viewModel.Use == "" {
+		viewModel.Use = "gomake"
+	}
+
+	if viewModel.Short == "" {
+		viewModel.Short = "Makefile written in golang"
+	}
+
+	if viewModel.Version == "" {
+		viewModel.Version = "0.0.0"
+		repo, err := git.PlainOpenWithOptions(".", &git.PlainOpenOptions{DetectDotGit: true})
+		if err == nil {
+			ref, err := repo.Head()
+			if err == nil {
+				viewModel.Version = "0.0.0-" + ref.Name().Short() + "-" + ref.Hash().String()
+			}
+		}
+	}
 
 	return viewModel, nil
 }

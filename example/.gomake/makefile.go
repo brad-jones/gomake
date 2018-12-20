@@ -1,9 +1,3 @@
-//go:generate go run ../../cmd/gomake/main.go gen
-
-// NOTE: This example is setup to use "go run", for easy testing in this repo.
-// You should probably install a released "gomake" binary and use something more
-// like: "go:generate gomake gen" in your makefile.
-
 package main
 
 import (
@@ -12,6 +6,24 @@ import (
 	"net"
 	"time"
 )
+
+// Use can optionally be set to customise the generated usage text.
+// It is passed directly to "cobra.Command.Use".
+// This is handy if you have built a static binary tool with the generator.
+//var Use = "foocmd"
+
+// Short can optionally be set to customise the generated usage text.
+// It is passed directly to "cobra.Command.Short".
+// This is handy if you have built a static binary tool with the generator.
+//var Short = "This is a custom CLI tool"
+
+// Version can optionally be set to customise the generated usage text.
+// It is passed directly to "cobra.Command.Version".
+//
+// If not provided it will default to the current git commit hash of the repo
+// that this file is part of, in the event a git repo is not found 0.0.0 will
+// be used.
+var Version = "0.0.0"
 
 // Validparms shows all valid parmeter types
 func Validparms(

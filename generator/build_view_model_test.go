@@ -13,10 +13,7 @@ var _ = Describe("buildViewModel", func() {
 		It("should return a view model with 0 commands", func() {
 			result, err := buildViewModel(&ast.Package{})
 			Expect(err).NotTo(HaveOccurred())
-			Expect(result).To(Equal(&tplViewModel{
-				Version:  "0.0.0",
-				Commands: []*tplCommand{},
-			}))
+			Expect(result.Commands).To(Equal([]*tplCommand{}))
 		})
 	})
 
@@ -76,22 +73,19 @@ var _ = Describe("buildViewModel", func() {
 				},
 			})
 			Expect(err).NotTo(HaveOccurred())
-			Expect(result).To(Equal(&tplViewModel{
-				Version: "0.0.0",
-				Commands: []*tplCommand{
-					&tplCommand{
-						CmdName:          "foo",
-						FuncName:         "Foo",
-						CobraCmdName:     "foo",
-						ShortDescription: "",
-						LongDescription:  "",
-						Options:          []*tplOption{},
-						Args:             &tplArgs{NoArgs: true},
-						Commands:         []*tplCommand{},
-						ParentCmdName:    "rootCmd",
-						HasCtx:           false,
-						HasErr:           false,
-					},
+			Expect(result.Commands).To(Equal([]*tplCommand{
+				&tplCommand{
+					CmdName:          "foo",
+					FuncName:         "Foo",
+					CobraCmdName:     "foo",
+					ShortDescription: "",
+					LongDescription:  "",
+					Options:          []*tplOption{},
+					Args:             &tplArgs{NoArgs: true},
+					Commands:         []*tplCommand{},
+					ParentCmdName:    "rootCmd",
+					HasCtx:           false,
+					HasErr:           false,
 				},
 			}))
 		})
@@ -182,36 +176,33 @@ var _ = Describe("buildViewModel", func() {
 				},
 			})
 			Expect(err).NotTo(HaveOccurred())
-			Expect(result).To(Equal(&tplViewModel{
-				Version: "0.0.0",
-				Commands: []*tplCommand{
-					&tplCommand{
-						CmdName:          "foo",
-						FuncName:         "Foo",
-						CobraCmdName:     "foo",
-						ShortDescription: "",
-						LongDescription:  "",
-						Options:          []*tplOption{},
-						Args:             &tplArgs{NoArgs: true},
-						Commands: []*tplCommand{
-							&tplCommand{
-								CmdName:          "bar",
-								FuncName:         "FooBar",
-								CobraCmdName:     "bar",
-								ShortDescription: "",
-								LongDescription:  "",
-								Options:          []*tplOption{},
-								Args:             &tplArgs{NoArgs: true},
-								Commands:         []*tplCommand{},
-								ParentCmdName:    "fooCmd",
-								HasCtx:           false,
-								HasErr:           false,
-							},
+			Expect(result.Commands).To(Equal([]*tplCommand{
+				&tplCommand{
+					CmdName:          "foo",
+					FuncName:         "Foo",
+					CobraCmdName:     "foo",
+					ShortDescription: "",
+					LongDescription:  "",
+					Options:          []*tplOption{},
+					Args:             &tplArgs{NoArgs: true},
+					Commands: []*tplCommand{
+						&tplCommand{
+							CmdName:          "bar",
+							FuncName:         "FooBar",
+							CobraCmdName:     "bar",
+							ShortDescription: "",
+							LongDescription:  "",
+							Options:          []*tplOption{},
+							Args:             &tplArgs{NoArgs: true},
+							Commands:         []*tplCommand{},
+							ParentCmdName:    "fooCmd",
+							HasCtx:           false,
+							HasErr:           false,
 						},
-						ParentCmdName: "rootCmd",
-						HasCtx:        false,
-						HasErr:        false,
 					},
+					ParentCmdName: "rootCmd",
+					HasCtx:        false,
+					HasErr:        false,
 				},
 			}))
 		})

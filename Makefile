@@ -15,7 +15,7 @@ build: restore generate
 	go generate ./resources/;
 	go build -o ./dist/gomake ./cmd/gomake/;
 
-test: restore generate
+test: clean restore generate
 	go test -race -coverprofile ./generator/generator.coverprofile -covermode=atomic ./generator;
 	go test -race -coverprofile ./executor/executor.coverprofile -covermode=atomic ./executor;
 	go tool cover -html=./generator/generator.coverprofile;
