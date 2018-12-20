@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/brad-jones/gomake/compare/v1.0.3...v1.0.4) (2018-12-20)
+
+
+### Bug Fixes
+
+* **azure-pipeline:** moved ci over to azure dev ops for windows and mac ([4a0281e](https://github.com/brad-jones/gomake/commit/4a0281e))
+
 ## [1.0.3](https://github.com/brad-jones/gomake/compare/v1.0.2...v1.0.3) (2018-11-29)
 
 
