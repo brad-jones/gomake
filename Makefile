@@ -1,12 +1,12 @@
 # One day we might be able to eat our own dog food but for now this will do.
 
-.PHONY: default restore generate build build-ci-images test clean release publish
+.PHONY: default restore generate build test clean release publish
 
 default: build
 
 restore:
 	go mod download;
-	yarn install;
+	pnpm install;
 
 generate:
 	go generate ./resources/;
@@ -14,13 +14,6 @@ generate:
 build: restore generate
 	go generate ./resources/;
 	go build -o ./dist/gomake ./cmd/gomake/;
-
-build-ci-images:
-	DOCKER_BUILDKIT=1 docker build \
-		--target final \
-		-t bradjones/gomake-ci-primary:latest \
-		./.circleci/images/primary;
-	docker push bradjones/gomake-ci-primary:latest;
 
 test: restore generate
 	go test -race -coverprofile ./generator/generator.coverprofile -covermode=atomic ./generator;
@@ -41,9 +34,6 @@ release: generate
 		-ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)" \
 		-o ./dist/gomake_windows_amd64.exe \
 		./cmd/gomake/;
-
-publish:
-	echo "TODO";
 
 clean:
 	rm -rf ./dist;
