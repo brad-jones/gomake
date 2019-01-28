@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/brad-jones/gomake/compare/v1.2.0...v1.3.0) (2019-01-28)
+
+
+### Features
+
+* **closures:** some functions in the runtime lib now return closures ([ddbd1af](https://github.com/brad-jones/gomake/commit/ddbd1af))
+
 # [1.2.0](https://github.com/brad-jones/gomake/compare/v1.1.0...v1.2.0) (2018-12-20)
 
 
