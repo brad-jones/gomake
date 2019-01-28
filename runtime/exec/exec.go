@@ -39,12 +39,18 @@ func Cmd(cmd string, decorators ...func(*exec.Cmd) error) (*exec.Cmd, error) {
 // Run is a convenience function for simple cases.
 // Instead of: Cmd("ping", Args("-c", "4", "8.8.8.8")).Run()
 // You might write: Run("ping", "-c", "4", "8.8.8.8")
-func Run(cmd string, args ...string) error {
-	c, err := Cmd(cmd, Args(args...))
-	if err != nil {
-		return err
+//
+// NOTE: A closure is returned thus making for nicer syntax when used with
+// run.Serial/Parallel functions. If using standalone you will need to invoke
+// the returned closure.
+func Run(cmd string, args ...string) func() error {
+	return func() error {
+		c, err := Cmd(cmd, Args(args...))
+		if err != nil {
+			return err
+		}
+		return c.Run()
 	}
-	return c.Run()
 }
 
 // RunBuffered is a convenience function for simple cases.
@@ -62,12 +68,18 @@ func RunBuffered(cmd string, args ...string) (stdOutBuf, stdErrBuf string, err e
 // RunPrefixed is a convenience function for simple cases.
 // Instead of: RunPrefixedCmd("foo", Cmd("ping", Args("-c", "4", "8.8.8.8")))
 // You might write: RunPrefixed("foo", "ping", "-c", "4", "8.8.8.8")
-func RunPrefixed(prefix, cmd string, args ...string) error {
-	c, err := Cmd(cmd, Args(args...))
-	if err != nil {
-		return err
+//
+// NOTE: A closure is returned thus making for nicer syntax when used with
+// run.Serial/Parallel functions. If using standalone you will need to invoke
+// the returned closure.
+func RunPrefixed(prefix, cmd string, args ...string) func() error {
+	return func() error {
+		c, err := Cmd(cmd, Args(args...))
+		if err != nil {
+			return err
+		}
+		return RunPrefixedCmd(prefix, c)
 	}
-	return RunPrefixedCmd(prefix, c)
 }
 
 // RunPrefixedCmd will prefix all StdOut and StdErr with given prefix.

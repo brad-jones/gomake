@@ -129,21 +129,21 @@ func Cmdwithquotes() {
 
 // RuntimeExample is an example of using the gomake/runtime library
 // This is of course completely optional and what you put inside your
-// gomake functions is totally up to you, it's just go afterall./
+// gomake functions is totally up to you, it's just go afterall.
 func RuntimeExample() error {
 	return run.Serial(
-		func() error { print.H1("Start", color.FgRed); return nil },
+		print.H1("Start", color.FgRed),
 		SubCmd,
 		Hyphenated_cmdFoo_bar,
 		func() error { return Shortflag("bar") },
-		func() error { print.H2("These next commands will run asynchronously"); return nil },
+		print.H2("These next commands will run asynchronously"),
 		run.Parallel(
 			Hyphenated_cmd,
 			Sub,
 			func() error { return Documentedflag("baz") },
-			func() error { return exec.RunPrefixed("google1", "ping", "-c", "4", "8.8.8.8") },
-			func() error { return exec.RunPrefixed("google2", "ping", "-c", "4", "8.8.4.4") },
+			exec.RunPrefixed("google1", "ping", "-c", "4", "8.8.8.8"),
+			exec.RunPrefixed("google2", "ping", "-c", "4", "8.8.4.4"),
 		),
-		func() error { print.H1("End", color.FgGreen); return nil },
+		print.H1("End", color.FgGreen),
 	)()
 }
