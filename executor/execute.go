@@ -52,12 +52,13 @@ func Execute(dir string, args ...string) error {
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
-		if err := cmd.Run(); err != nil {
+		err := cmd.Run()
+		if err != nil {
 			if _, ok := err.(*exec.ExitError); ok {
 				os.Exit(1)
 			}
-			return err
 		}
+		return err
 	}
 
 	newArgs := []string{exePath}
