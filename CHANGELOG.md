@@ -1,3 +1,11 @@
+## [1.3.1](https://github.com/brad-jones/gomake/compare/v1.3.0...v1.3.1) (2019-02-05)
+
+
+### Bug Fixes
+
+* **windows-executor:** exit from windows executor workflow correctly ([0e1a73c](https://github.com/brad-jones/gomake/commit/0e1a73c))
+* **windows-runner-path:** instead of runner/.exe we now have runner.exe ([ea09f94](https://github.com/brad-jones/gomake/commit/ea09f94))
+
 # [1.3.0](https://github.com/brad-jones/gomake/compare/v1.2.0...v1.3.0) (2019-01-28)
 
 
