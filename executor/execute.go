@@ -21,7 +21,7 @@ func Execute(dir string, args ...string) error {
 
 	exePath := filepath.Join(dir, "runner")
 	if runtime.GOOS == "windows" {
-		exePath = filepath.Join(exePath, ".exe")
+		exePath = exePath + ".exe"
 	}
 
 	if _, err := os.Stat(exePath); err == nil {
