@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/brad-jones/gomake/compare/v1.3.1...v1.4.0) (2019-02-07)
+
+
+### Features
+
+* **brew:** added homebrew support ([5daf063](https://github.com/brad-jones/gomake/commit/5daf063))
+
 ## [1.3.1](https://github.com/brad-jones/gomake/compare/v1.3.0...v1.3.1) (2019-02-05)
 
 
