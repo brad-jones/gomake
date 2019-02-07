@@ -3,3 +3,15 @@
 [![codecov](https://codecov.io/gh/brad-jones/gomake/branch/master/graph/badge.svg)](https://codecov.io/gh/brad-jones/gomake)
 
 A cross platform build tool / task runner that scales.
+
+## Instalation
+
+### Direct download
+
+Go to <https://github.com/brad-jones/gomake/releases> and download the binary for your Operating System, rename it to `gomake` and add it to your `$PATH`.
+
+### Homebrew
+
+```
+brew install brad-jones/tap/gomake
+```

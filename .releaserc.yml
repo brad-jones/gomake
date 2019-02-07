@@ -21,8 +21,9 @@ plugins:
   # Create new github release
   - - "@semantic-release/github"
     - assets:
-        - path: "./dist/**/*"
-        - path: "./dist/**/*.*"
+        - path: "./dist/github-downloads/**/*"
+        - path: "./dist/github-downloads/**/*.*"
 
   # Run final publish tasks, such as docker push
   - - "@semantic-release/exec"
+    - publishCmd: "make publish VERSION=${nextRelease.version}"

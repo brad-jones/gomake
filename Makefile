@@ -1,6 +1,6 @@
 # One day we might be able to eat our own dog food but for now this will do.
 
-.PHONY: default restore generate build test clean release publish
+.PHONY: default restore generate build test clean release publish build-release-bins
 
 default: build
 
@@ -21,19 +21,34 @@ test: clean restore generate
 	go tool cover -html=./generator/generator.coverprofile;
 	go tool cover -html=./executor/executor.coverprofile;
 
-release: generate
+build-release-bins:
+	rm -rf ./dist;
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
 		-ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)" \
-		-o ./dist/gomake_linux_amd64 \
+		-o ./dist/github-downloads/gomake_linux_amd64 \
 		./cmd/gomake/;
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build \
 		-ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)" \
-		-o ./dist/gomake_darwin_amd64 \
+		-o ./dist/github-downloads/gomake_darwin_amd64 \
 		./cmd/gomake/;
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build \
 		-ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)" \
-		-o ./dist/gomake_windows_amd64.exe \
+		-o ./dist/github-downloads/gomake_windows_amd64.exe \
 		./cmd/gomake/;
+
+release: generate build-release-bins
+	mkdir -p ./dist/homebrew-tap;
+	VERSION=$(VERSION) HASH=$(shell sha256sum ./dist/github-downloads/gomake_darwin_amd64 | head -c 64) \
+		envsubst < ./brew.rb > ./dist/homebrew-tap/gomake.rb;
+
+publish:
+	git clone --progress https://${GITHUB_TOKEN}@github.com/brad-jones/homebrew-tap.git /tmp/homebrew-tap;
+	rm -f /tmp/homebrew-tap/Formula/gomake.rb;
+	cp ./dist/homebrew-tap/gomake.rb /tmp/homebrew-tap/Formula/gomake.rb;
+	cd /tmp/homebrew-tap && \
+	git add -A && \
+	git commit -m "chore(gomake): release new version $(VERSION)" && \
+	git push origin master;
 
 clean:
 	rm -rf ./dist;
