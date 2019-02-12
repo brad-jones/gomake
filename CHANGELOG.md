@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/brad-jones/gomake/compare/v1.4.1...v1.5.0) (2019-02-12)
+
+
+### Features
+
+* **scoop:** added scoop support ([764ab79](https://github.com/brad-jones/gomake/commit/764ab79))
+
 ## [1.4.1](https://github.com/brad-jones/gomake/compare/v1.4.0...v1.4.1) (2019-02-12)
 
 
