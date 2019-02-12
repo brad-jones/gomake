@@ -40,12 +40,22 @@ release: generate build-release-bins
 	mkdir -p ./dist/homebrew-tap;
 	VERSION=$(VERSION) HASH=$(shell sha256sum ./dist/github-downloads/gomake_darwin_amd64 | head -c 64) \
 		envsubst < ./brew.rb > ./dist/homebrew-tap/gomake.rb;
+	mkdir -p ./dist/scoop-bucket;
+	VERSION=$(VERSION) HASH=$(shell sha256sum ./dist/github-downloads/gomake_windows_amd64.exe | head -c 64) \
+		envsubst < ./scoop.json > ./dist/scoop-bucket/gomake.json;
 
 publish:
 	git clone --progress https://${GITHUB_TOKEN}@github.com/brad-jones/homebrew-tap.git /tmp/homebrew-tap;
 	rm -f /tmp/homebrew-tap/Formula/gomake.rb;
 	cp ./dist/homebrew-tap/gomake.rb /tmp/homebrew-tap/Formula/gomake.rb;
 	cd /tmp/homebrew-tap && \
+	git add -A && \
+	git commit -m "chore(gomake): release new version $(VERSION)" && \
+	git push origin master;
+	git clone --progress https://${GITHUB_TOKEN}@github.com/brad-jones/scoop-bucket.git /tmp/scoop-bucket;
+	rm -f /tmp/scoop-bucket/gomake.json;
+	cp ./dist/scoop-bucket/gomake.json /tmp/scoop-bucket/gomake.json;
+	cd /tmp/scoop-bucket && \
 	git add -A && \
 	git commit -m "chore(gomake): release new version $(VERSION)" && \
 	git push origin master;

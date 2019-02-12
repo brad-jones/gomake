@@ -12,6 +12,17 @@ Go to <https://github.com/brad-jones/gomake/releases> and download the binary fo
 
 ### Homebrew
 
+<https://brew.sh>
+
 ```
 brew install brad-jones/tap/gomake
+```
+
+### Scoop
+
+<https://scoop.sh>
+
+```
+scoop bucket add brad-jones https://github.com/brad-jones/scoop-bucket.git;
+scoop install gomake;
 ```
