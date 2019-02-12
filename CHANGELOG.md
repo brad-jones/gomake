@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/brad-jones/gomake/compare/v1.4.0...v1.4.1) (2019-02-12)
+
+
+### Bug Fixes
+
+* **brew:** download link needed the 'v' prefixed to the version number ([08c4887](https://github.com/brad-jones/gomake/commit/08c4887))
+
 # [1.4.0](https://github.com/brad-jones/gomake/compare/v1.3.1...v1.4.0) (2019-02-07)
 
 
