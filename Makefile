@@ -35,6 +35,11 @@ build-release-bins:
 		-ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)" \
 		-o ./dist/github-downloads/gomake_windows_amd64.exe \
 		./cmd/gomake/;
+	docker run --rm -v ${PWD}:${PWD} -w ${PWD} -e VERSION=$(VERSION) goreleaser/nfpm:v0.9 pkg \
+		--target ./dist/github-downloads/gomake_linux_amd64.rpm;
+	docker run --rm -v ${PWD}:${PWD} -w ${PWD} -e VERSION=$(VERSION) goreleaser/nfpm:v0.9 pkg \
+		--target ./dist/github-downloads/gomake_linux_amd64.deb;
+	cd ./dist/github-downloads && sha256sum * > gomake_sha256_checksums.txt;
 
 release: generate build-release-bins
 	mkdir -p ./dist/homebrew-tap;

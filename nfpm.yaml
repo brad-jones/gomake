@@ -1,0 +1,13 @@
+# nfpm config file: https://github.com/goreleaser/nfpm
+
+name: "gomake"
+arch: "amd64"
+platform: "linux"
+version: "v${VERSION}"
+maintainer: "Brad Jones <brad@bjc.id.au>"
+description: A cross platform build tool / task runner that scales.
+homepage: "https://github.com/brad-jones/gomake"
+license: "MIT"
+bindir: "/usr/local/bin"
+files:
+  ./dist/github-downloads/gomake_linux_amd64: "/usr/local/bin/gomake"
