@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/brad-jones/gomake/compare/v1.5.0...v1.6.0) (2019-02-12)
+
+
+### Features
+
+* **rpm-deb:** added rpm and deb  package generation using nfpm ([1d33261](https://github.com/brad-jones/gomake/commit/1d33261))
+
 # [1.5.0](https://github.com/brad-jones/gomake/compare/v1.4.1...v1.5.0) (2019-02-12)
 
 
