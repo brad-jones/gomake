@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/brad-jones/gomake/compare/v1.6.1...v1.6.2) (2019-02-13)
+
+
+### Bug Fixes
+
+* **cache:** any go file inside a .gomake folder is added to the hash ([ae70702](https://github.com/brad-jones/gomake/commit/ae70702)), closes [#7](https://github.com/brad-jones/gomake/issues/7)
+
 ## [1.6.1](https://github.com/brad-jones/gomake/compare/v1.6.0...v1.6.1) (2019-02-13)
 
 
