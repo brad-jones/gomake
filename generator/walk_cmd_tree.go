@@ -64,6 +64,8 @@ func walkCmdTree(tree cmdTree, parentCmdName string) ([]*tplCommand, error) {
 			}
 		}
 
+		cmd.LongDescription = "\\n" + strings.TrimLeft(cmd.LongDescription, "\\n")
+
 		// Function parameters are converted to cobra command options.
 		// A final variadic parameter is converted to cobra positional arguments
 		// NOTE: Only `...string` is supported
