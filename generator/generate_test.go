@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/brad-jones/gomake/generator"
+	"gopkg.in/brad-jones/gomake.v2/generator"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

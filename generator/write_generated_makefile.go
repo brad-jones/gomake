@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/brad-jones/gomake/resources"
+	"gopkg.in/brad-jones/gomake.v2/resources"
 )
 
 func writeGeneratedMakefile(cwd string, viewModel *tplViewModel) error {

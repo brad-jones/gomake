@@ -5,8 +5,8 @@ import (
 	"os"
 	"runtime/debug"
 
-	"github.com/brad-jones/gomake/executor"
 	"github.com/fatih/color"
+	"gopkg.in/brad-jones/gomake.v2/executor"
 )
 
 // Injected by ldflags

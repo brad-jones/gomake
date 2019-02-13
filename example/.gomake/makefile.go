@@ -6,9 +6,9 @@ import (
 	"net"
 	"time"
 
-	"github.com/brad-jones/gomake/runtime/exec"
-	"github.com/brad-jones/gomake/runtime/print"
-	"github.com/brad-jones/gomake/runtime/run"
+	"gopkg.in/brad-jones/gomake.v2/runtime/exec"
+	"gopkg.in/brad-jones/gomake.v2/runtime/print"
+	"gopkg.in/brad-jones/gomake.v2/runtime/run"
 	"github.com/fatih/color"
 )
 

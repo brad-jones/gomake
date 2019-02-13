@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"syscall"
 
-	"github.com/brad-jones/gomake/generator"
+	"gopkg.in/brad-jones/gomake.v2/generator"
 )
 
 func Execute(dir string, args ...string) error {
