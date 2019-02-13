@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/brad-jones/gomake/compare/v2.1.0...v2.1.1) (2019-02-13)
+
+
+### Bug Fixes
+
+* **golang-modules:** use gopkg.in service now that we are to v2 ([fa348a9](https://github.com/brad-jones/gomake/commit/fa348a9))
+
 # [2.1.0](https://github.com/brad-jones/gomake/compare/v2.0.0...v2.1.0) (2019-02-13)
 
 
