@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/brad-jones/gomake/compare/v1.6.0...v1.6.1) (2019-02-13)
+
+
+### Bug Fixes
+
+* **help:** exit code now returns as 1 for unknown commands or flags ([e1edc9f](https://github.com/brad-jones/gomake/commit/e1edc9f)), closes [#8](https://github.com/brad-jones/gomake/issues/8)
+
 # [1.6.0](https://github.com/brad-jones/gomake/compare/v1.5.0...v1.6.0) (2019-02-12)
 
 
