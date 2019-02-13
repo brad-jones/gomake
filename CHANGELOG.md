@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/brad-jones/gomake/compare/v2.0.0...v2.1.0) (2019-02-13)
+
+
+### Features
+
+* **default-env-values:** options can now consume env vars ([c3b424d](https://github.com/brad-jones/gomake/commit/c3b424d)), closes [#5](https://github.com/brad-jones/gomake/issues/5)
+
 # [2.0.0](https://github.com/brad-jones/gomake/compare/v1.6.3...v2.0.0) (2019-02-13)
 
 
