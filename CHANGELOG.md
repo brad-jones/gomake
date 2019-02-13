@@ -1,3 +1,12 @@
+## [1.6.3](https://github.com/brad-jones/gomake/compare/v1.6.2...v1.6.3) (2019-02-13)
+
+
+### Bug Fixes
+
+* **long-description:** comments can be spaced out for readability ([e60d57e](https://github.com/brad-jones/gomake/commit/e60d57e)), closes [#4](https://github.com/brad-jones/gomake/issues/4)
+* **long-description:** if only whitespace truncate to zero length string ([873973d](https://github.com/brad-jones/gomake/commit/873973d))
+* **option-comments:** can now have colons in their descriptions ([2c63203](https://github.com/brad-jones/gomake/commit/2c63203)), closes [#1](https://github.com/brad-jones/gomake/issues/1)
+
 ## [1.6.2](https://github.com/brad-jones/gomake/compare/v1.6.1...v1.6.2) (2019-02-13)
 
 
