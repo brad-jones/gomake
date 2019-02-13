@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"runtime/debug"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -118,6 +119,11 @@ func main() {
 	// -- END: Commands
 
 	// Execute the generated cobra cli app
-	rootCmd.Execute()
+	if err := rootCmd.Execute(); err != nil {
+		if !strings.HasPrefix(err.Error(), "unknown") {
+			panic(err)
+		}
+		os.Exit(1)
+	}
 	os.Exit(0)
 }
