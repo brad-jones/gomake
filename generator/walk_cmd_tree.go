@@ -7,7 +7,7 @@ import (
 	"github.com/pinzolo/casee"
 )
 
-var regexpOptDoc = regexp.MustCompile("--(.*),?:")
+var regexpOptDoc = regexp.MustCompile("--(.*?),?:")
 
 func walkCmdTree(tree cmdTree, parentCmdName string) ([]*tplCommand, error) {
 
