@@ -6,7 +6,7 @@ package generator
 // cobra cli application.
 func Generate(cwd string) error {
 
-	fset, nodes, err := parseAST(cwd)
+	_, nodes, err := parseAST(cwd)
 	if err != nil {
 		return err
 	}
@@ -16,7 +16,7 @@ func Generate(cwd string) error {
 		return err
 	}
 
-	h, err := cacheHashGen(fset)
+	h, err := CacheHashGen(cwd)
 	if err != nil {
 		return err
 	}

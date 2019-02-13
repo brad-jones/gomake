@@ -3,43 +3,31 @@ package generator
 import (
 	"crypto/sha1"
 	"fmt"
-	"go/token"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
 
 func CacheHashGen(dir string) (string, error) {
-	fset, _, err := parseAST(dir)
-	if err != nil {
-		return "", err
-	}
-	h, err := cacheHashGen(fset)
-	if err != nil {
-		return "", err
-	}
-	return h, nil
-}
 
-func cacheHashGen(fset *token.FileSet) (string, error) {
-
-	var possibleErr error
 	var hashContent strings.Builder
 
-	fset.Iterate(func(f *token.File) bool {
-		fname := f.Name()
-		finfo, err := os.Stat(fname)
+	if err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			possibleErr = err
-			return false
+			return err
 		}
-		hashContent.WriteString(fname)
-		hashContent.WriteString(strconv.FormatInt(finfo.ModTime().Unix(), 10))
-		return true
-	})
-
-	if possibleErr != nil {
-		return "", possibleErr
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".go") && info.Name() != "makefile_generated.go" {
+			finfo, err := os.Stat(path)
+			if err != nil {
+				return err
+			}
+			hashContent.WriteString(path)
+			hashContent.WriteString(strconv.FormatInt(finfo.ModTime().Unix(), 10))
+		}
+		return nil
+	}); err != nil {
+		return "", err
 	}
 
 	h := sha1.New()
