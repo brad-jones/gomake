@@ -55,7 +55,7 @@ var _ = Describe("walkCmdTree", func() {
 									Text: "// --bar: This is the bar flag description",
 								},
 								&ast.Comment{
-									Text: "// --qux, q: This is the qux flag description with short flag",
+									Text: "// --qux, -q: This is the qux flag description with short flag",
 								},
 							},
 						},

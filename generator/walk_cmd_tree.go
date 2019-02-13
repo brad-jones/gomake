@@ -36,6 +36,7 @@ func walkCmdTree(tree cmdTree, parentCmdName string) ([]*tplCommand, error) {
 		// following making up the remainder of the long description.
 		optDocs := map[string]string{}
 		optShortNames := map[string]string{}
+		optDefaultValues := map[string]string{}
 		if branch.leaf.Doc != nil {
 			for k, v := range branch.leaf.Doc.List {
 				line := strings.TrimLeft(v.Text, "// ")
@@ -52,12 +53,23 @@ func walkCmdTree(tree cmdTree, parentCmdName string) ([]*tplCommand, error) {
 						// Parse option comments, they look like this:
 						// --foo, -f: the foo option does xyz
 						// --bar: the bar option does abc
+						// --baz, $BAZ: yes defaults can be provided via the env
+						// --abc, -a, $ABC: also supported
+						// --qux, "a static default": this should also work
 						// They may only span a single line
 						parts := strings.Split(regexpOptDoc.FindStringSubmatch(line)[1], ",")
 						value := strings.TrimSpace(regexpOptDoc.ReplaceAllString(line, ""))
 						optDocs[parts[0]] = value
 						if len(parts) > 1 {
-							optShortNames[parts[0]] = strings.TrimPrefix(strings.TrimSpace(parts[1]), "-")
+							v := strings.TrimSpace(parts[1])
+							if strings.HasPrefix(v, "-") {
+								optShortNames[parts[0]] = strings.TrimPrefix(v, "-")
+							} else {
+								optDefaultValues[parts[0]] = v
+							}
+							if len(parts) > 2 {
+								optDefaultValues[parts[0]] = strings.TrimSpace(parts[2])
+							}
 						}
 					}
 				}
@@ -101,12 +113,22 @@ func walkCmdTree(tree cmdTree, parentCmdName string) ([]*tplCommand, error) {
 
 				for _, name := range param.Names {
 					optNameChain := casee.ToChainCase(name.Name)
+					description := optDocs[optNameChain]
+					optDefaultValue := defaultValue
+					if val, ok := optDefaultValues[optNameChain]; ok {
+						if strings.HasPrefix(val, "$") {
+							description = "env: " + val + " - " + description
+							val = "os.Getenv(\"" + strings.TrimPrefix(val, "$") + "\")"
+						}
+						optDefaultValue = val
+					}
+					optDefaultValue = strings.Replace(optDefaultValue, "\\\"", "\"", -1)
 					cmd.Options = append(cmd.Options, &tplOption{
 						Name:         name.Name,
 						LongName:     optNameChain,
 						ShortName:    optShortNames[optNameChain],
-						Description:  optDocs[optNameChain],
-						DefaultValue: defaultValue,
+						Description:  description,
+						DefaultValue: optDefaultValue,
 						FlagType:     flagType,
 					})
 				}
