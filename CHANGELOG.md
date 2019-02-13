@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/brad-jones/gomake/compare/v1.6.3...v2.0.0) (2019-02-13)
+
+
+### Bug Fixes
+
+* **option-names:** are now chain cased as one would expect for a cli app ([d8137f7](https://github.com/brad-jones/gomake/commit/d8137f7)), closes [#6](https://github.com/brad-jones/gomake/issues/6)
+
+
+### BREAKING CHANGES
+
+* **option-names:** we no longer support options with camelCase, all options are chain-case. To be clear the function parameters are still camelCase but the option comments and cobra option names are to be chain-case.
+
 ## [1.6.3](https://github.com/brad-jones/gomake/compare/v1.6.2...v1.6.3) (2019-02-13)
 
 
