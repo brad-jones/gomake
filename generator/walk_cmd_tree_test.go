@@ -74,6 +74,7 @@ var _ = Describe("walkCmdTree", func() {
 					Options: []*tplOption{
 						&tplOption{
 							Name:         "bar",
+							LongName:     "bar",
 							ShortName:    "",
 							Description:  "This is the bar flag description",
 							DefaultValue: "\"\"",
@@ -81,6 +82,7 @@ var _ = Describe("walkCmdTree", func() {
 						},
 						&tplOption{
 							Name:         "qux",
+							LongName:     "qux",
 							ShortName:    "q",
 							Description:  "This is the qux flag description with short flag",
 							DefaultValue: "0",

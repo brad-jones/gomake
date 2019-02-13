@@ -100,10 +100,12 @@ func walkCmdTree(tree cmdTree, parentCmdName string) ([]*tplCommand, error) {
 				defaultValue := getDefaultValueForType(typeName, isArray)
 
 				for _, name := range param.Names {
+					optNameChain := casee.ToChainCase(name.Name)
 					cmd.Options = append(cmd.Options, &tplOption{
 						Name:         name.Name,
-						ShortName:    optShortNames[name.Name],
-						Description:  optDocs[name.Name],
+						LongName:     optNameChain,
+						ShortName:    optShortNames[optNameChain],
+						Description:  optDocs[optNameChain],
 						DefaultValue: defaultValue,
 						FlagType:     flagType,
 					})

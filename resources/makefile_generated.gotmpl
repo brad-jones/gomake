@@ -74,7 +74,7 @@ func main() {
 			{{$CobraCmdName}}Cmd.Short = "{{.ShortDescription}}"
 			{{$CobraCmdName}}Cmd.Long = {{$CobraCmdName}}Cmd.Short + "\n{{.LongDescription}}"
 			{{range .Options -}}
-				{{.Name}}Opt := {{$CobraCmdName}}Cmd.Flags().{{.FlagType}}("{{.Name}}", "{{.ShortName}}", {{.DefaultValue}}, "{{.Description}}")
+				{{.Name}}Opt := {{$CobraCmdName}}Cmd.Flags().{{.FlagType}}("{{.LongName}}", "{{.ShortName}}", {{.DefaultValue}}, "{{.Description}}")
 			{{end -}}
 			{{if .Args.NoArgs}}
 				{{- $CobraCmdName}}Cmd.Args = cobra.NoArgs

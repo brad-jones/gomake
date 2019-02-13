@@ -31,6 +31,7 @@ type tplCommand struct {
 
 type tplOption struct {
 	Name         string
+	LongName     string
 	ShortName    string
 	Description  string
 	DefaultValue string
