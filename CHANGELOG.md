@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/brad-jones/gomake/compare/v2.1.1...v2.1.2) (2019-02-14)
+
+
+### Bug Fixes
+
+* **brew:** must download a tarball and extract, can not download direct ([6526e07](https://github.com/brad-jones/gomake/commit/6526e07))
+
 ## [2.1.1](https://github.com/brad-jones/gomake/compare/v2.1.0...v2.1.1) (2019-02-13)
 
 
