@@ -8,7 +8,25 @@ A cross platform build tool / task runner that scales.
 
 ### Direct download
 
-Go to <https://github.com/brad-jones/gomake/releases> and download the binary for your Operating System, rename it to `gomake` and add it to your `$PATH`.
+Go to <https://github.com/brad-jones/gomake/releases> and download the archive for your Operating System, extract the gomake binary and and add it to your `$PATH`.
+
+#### Curl Bash
+
+```
+curl -L https://github.com/brad-jones/gomake/releases/download/v2.1.2/gomake_linux_amd64.tar.gz -o- | sudo tar -xz -C /usr/bin gomake
+```
+
+### RPM package
+
+```
+sudo rpm -i https://github.com/brad-jones/gomake/releases/download/v2.1.2/gomake_linux_amd64.rpm
+```
+
+### DEB package
+
+```
+curl -sLO https://github.com/brad-jones/gomake/releases/download/v2.1.2/gomake_linux_amd64.deb && sudo dpkg -i gomake_linux_amd64.deb && rm gomake_linux_amd64.deb
+```
 
 ### Homebrew
 
