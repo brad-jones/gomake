@@ -35,18 +35,44 @@ build-release-bins:
 		-ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)" \
 		-o ./dist/github-downloads/gomake_windows_amd64.exe \
 		./cmd/gomake/;
+	tar -czf ./dist/github-downloads/gomake_linux_amd64.tar.gz \
+		--transform='s~./~~g' \
+		--transform='s~disgithub-download~~g' \
+		--transform='s~gomake_linux_amd64~gomake~g' \
+		./README.md \
+		./CHANGELOG.md \
+		./LICENSE \
+		./dist/github-downloads/gomake_linux_amd64;
+	tar -czf ./dist/github-downloads/gomake_darwin_amd64.tar.gz \
+		--transform='s~./~~g' \
+		--transform='s~disgithub-download~~g' \
+		--transform='s~gomake_darwin_amd64~gomake~g' \
+		./README.md \
+		./CHANGELOG.md \
+		./LICENSE \
+		./dist/github-downloads/gomake_darwin_amd64;
+	zip -j ./dist/github-downloads/gomake_windows_amd64.zip \
+		./README.md \
+		./CHANGELOG.md \
+		./LICENSE \
+		./dist/github-downloads/gomake_windows_amd64.exe;
+	printf "@ gomake_windows_amd64.exe\n@=gomake.exe\n" | \
+	zipnote -w ./dist/github-downloads/gomake_windows_amd64.zip;
 	docker run --rm -v ${PWD}:${PWD} -w ${PWD} -e VERSION=$(VERSION) goreleaser/nfpm:v0.9 pkg \
 		--target ./dist/github-downloads/gomake_linux_amd64.rpm;
 	docker run --rm -v ${PWD}:${PWD} -w ${PWD} -e VERSION=$(VERSION) goreleaser/nfpm:v0.9 pkg \
 		--target ./dist/github-downloads/gomake_linux_amd64.deb;
+	rm -f ./dist/github-downloads/gomake_linux_amd64;
+	rm -f ./dist/github-downloads/gomake_darwin_amd64;
+	rm -f ./dist/github-downloads/gomake_windows_amd64.exe;
 	cd ./dist/github-downloads && sha256sum * > gomake_sha256_checksums.txt;
 
 release: generate build-release-bins
 	mkdir -p ./dist/homebrew-tap;
-	VERSION=$(VERSION) HASH=$(shell sha256sum ./dist/github-downloads/gomake_darwin_amd64 | head -c 64) \
+	VERSION=$(VERSION) HASH=$(shell sha256sum ./dist/github-downloads/gomake_darwin_amd64.tar.gz | head -c 64) \
 		envsubst < ./brew.rb > ./dist/homebrew-tap/gomake.rb;
 	mkdir -p ./dist/scoop-bucket;
-	VERSION=$(VERSION) HASH=$(shell sha256sum ./dist/github-downloads/gomake_windows_amd64.exe | head -c 64) \
+	VERSION=$(VERSION) HASH=$(shell sha256sum ./dist/github-downloads/gomake_windows_amd64.zip | head -c 64) \
 		envsubst < ./scoop.json > ./dist/scoop-bucket/gomake.json;
 
 publish:
