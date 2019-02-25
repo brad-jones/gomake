@@ -2,6 +2,7 @@ package generator
 
 import (
 	"go/ast"
+	"regexp"
 	"strings"
 
 	"github.com/pinzolo/casee"
@@ -14,6 +15,16 @@ type cmdTreeBranch struct {
 	branch cmdTree
 }
 
+// Command names can not start with a number.
+// What we are trying to avoid is command invocations like:
+//
+//     gomake upload-to-s 3
+//
+// It should obviously be:
+//
+//     gomake upload-to-s3
+var cmdStartsWithNo = regexp.MustCompile(".*?(_\\d+).*?")
+
 func buildCmdTree(nodes *ast.Package) cmdTree {
 
 	tree := cmdTree{}
@@ -23,10 +34,13 @@ func buildCmdTree(nodes *ast.Package) cmdTree {
 		case *ast.FuncDecl:
 			if isValidGoMakeFunc(funcDecl) {
 				root := tree
-				preserveUnderscores := strings.Replace(funcDecl.Name.Name, "_", ":", -1)
-				snakeCase := casee.ToSnakeCase(preserveUnderscores)
-				convertPreservedUnderscoresToHyphens := strings.Replace(snakeCase, "_:_", "-", -1)
-				for _, cmd := range strings.Split(convertPreservedUnderscoresToHyphens, "_") {
+				cmdName := strings.Replace(funcDecl.Name.Name, "_", ":", -1)
+				cmdName = casee.ToSnakeCase(cmdName)
+				cmdName = strings.Replace(cmdName, "_:_", "-", -1)
+				for _, match := range cmdStartsWithNo.FindAllStringSubmatch(cmdName, -1) {
+					cmdName = strings.Replace(cmdName, match[1], strings.TrimPrefix(match[1], "_"), 1)
+				}
+				for _, cmd := range strings.Split(cmdName, "_") {
 					if _, ok := root[cmd]; !ok {
 						root[cmd] = cmdTreeBranch{
 							leaf:   funcDecl,
