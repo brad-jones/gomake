@@ -24,7 +24,10 @@ func writeGeneratedMakefile(cwd string, viewModel *tplViewModel) error {
 
 	formatted, err := format.Source(unFormatted.Bytes())
 	if err != nil {
-		return &ErrWritingMakefile{innerError: err}
+		return &ErrWritingMakefile{
+			innerError: err,
+			src:        unFormatted.Bytes(),
+		}
 	}
 
 	if err := ioutil.WriteFile(filepath.Join(cwd, "makefile_generated.go"), formatted, 0644); err != nil {

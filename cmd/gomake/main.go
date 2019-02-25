@@ -27,6 +27,10 @@ type errWithInnerErr interface {
 	InnerError() error
 }
 
+type errWithSource interface {
+	Source() []byte
+}
+
 // printInnerError recursively prints inner error messages
 func printInnerErrors(err interface{}) {
 	if err, ok := err.(errWithInnerErr); ok {
@@ -34,6 +38,15 @@ func printInnerErrors(err interface{}) {
 			red.Println("inner error")
 			fmt.Println(innerErr)
 			fmt.Println()
+			if os.Getenv("GOMAKE_DEBUG") == "1" {
+				if err, ok := err.(errWithSource); ok {
+					if src := err.Source(); src != nil {
+						red.Println("makefile_generated.go that failed compilation")
+						fmt.Println(string(src))
+						fmt.Println()
+					}
+				}
+			}
 			printInnerErrors(innerErr)
 		}
 	}

@@ -4,6 +4,7 @@ package generator
 // See InnerError for more details.
 type ErrWritingMakefile struct {
 	innerError error
+	src        []byte
 }
 
 func (e *ErrWritingMakefile) Error() string {
@@ -12,4 +13,8 @@ func (e *ErrWritingMakefile) Error() string {
 
 func (e *ErrWritingMakefile) InnerError() error {
 	return e.innerError
+}
+
+func (e *ErrWritingMakefile) Source() []byte {
+	return e.src
 }
