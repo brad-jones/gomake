@@ -1,3 +1,11 @@
+## [2.1.3](https://github.com/brad-jones/gomake/compare/v2.1.2...v2.1.3) (2019-02-25)
+
+
+### Bug Fixes
+
+* **cmd-names:** now can have numbers in them ([4dc15cd](https://github.com/brad-jones/gomake/commit/4dc15cd))
+* **error-handling:** improvements to allow for easier debugging ([d990cfa](https://github.com/brad-jones/gomake/commit/d990cfa))
+
 ## [2.1.2](https://github.com/brad-jones/gomake/compare/v2.1.1...v2.1.2) (2019-02-14)
 
 
