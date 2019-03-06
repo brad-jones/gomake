@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/brad-jones/gomake/compare/v2.1.3...v2.2.0) (2019-03-06)
+
+
+### Features
+
+* **proxy-args:** positional arguments are now not parsed by cobra ([665ae33](https://github.com/brad-jones/gomake/commit/665ae33))
+
 ## [2.1.3](https://github.com/brad-jones/gomake/compare/v2.1.2...v2.1.3) (2019-02-25)
 
 
