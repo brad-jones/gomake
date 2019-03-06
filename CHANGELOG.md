@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/brad-jones/gomake/compare/v2.2.0...v2.2.1) (2019-03-06)
+
+
+### Bug Fixes
+
+* **go-node-versions:** bump versions of go and node used in pipeline ([7119070](https://github.com/brad-jones/gomake/commit/7119070))
+
 # [2.2.0](https://github.com/brad-jones/gomake/compare/v2.1.3...v2.2.0) (2019-03-06)
 
 
