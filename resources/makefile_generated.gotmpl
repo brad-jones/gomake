@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"runtime/debug"
+	"sort"
 	"strings"
 	"time"
 
@@ -66,6 +67,24 @@ func main() {
 		return ctx, ctxCancel
 	}
 
+	// Commands with arguments get special treatment to the incomming os.Args,
+	// this treatmeant happens just before we execute the rootCmd. But this
+	// slice is populated by each command definition below.
+	cmdsWithArgs := []string{}
+	cmdsWithArgsOptions := map[string][]string{}
+	addCmdWithArgs := func(fullCmdName string, options ...string) {
+		cmdsWithArgs = append(cmdsWithArgs, fullCmdName)
+		cmdsWithArgsOptions[fullCmdName] = []string{}
+		for _, opt := range options {
+			if opt != "" {
+				cmdsWithArgsOptions[fullCmdName] = append(
+					cmdsWithArgsOptions[fullCmdName],
+					opt,
+				)
+			}
+		}
+	}
+
 	{{ define "command" }}
 		{{$CobraCmdName := .CobraCmdName}}
 		(func() {
@@ -78,6 +97,12 @@ func main() {
 			{{end -}}
 			{{if .Args.NoArgs}}
 				{{- $CobraCmdName}}Cmd.Args = cobra.NoArgs
+			{{else}}
+				addCmdWithArgs("{{.FullCmdName}}",
+					{{range .Options -}}
+						"{{.LongName}}", "{{.ShortName}}",
+					{{end}}
+				)
 			{{end}}
 			{{- $CobraCmdName}}Cmd.Run = func(cmd *cobra.Command, args []string) {
 				ctx, cancel := getContext()
@@ -118,6 +143,57 @@ func main() {
 	{{end}}
 	// -- END: Commands
 
+	// This is where we handle commands with variadic / positional arguments.
+	// Out of the box cobra will attempt to parse any options / flags, even
+	// those provided after positional arguments which makes it impossible to
+	// proxy these to other commands. We want a gomake task to be able to do a
+	// similar thing to a bash script that does `some-cmd "$@"`
+	args := os.Args[1:]
+	argsString := strings.Join(args, " ")
+	sort.Sort(byLengthDec(cmdsWithArgs))
+	for _, cmdWithArgs := range cmdsWithArgs {
+		if !strings.HasPrefix(argsString, cmdWithArgs) {
+			continue
+		}
+
+		// So at this point we have worked out that we are about to execute a
+		// command that accepts positional arguments. Now we will build a slice
+		// of options that we know the cobra command will accept. These options
+		// do not get bundled into the positional arguments and should be parsed
+		// by cobra as expected.
+		validOpts := append(cmdsWithArgsOptions[cmdWithArgs],
+			"help", "h",
+			"timeout", "t",
+		)
+		opts := []string{}
+		argsLength := len(args)
+		for i, v := range args {
+			opt := strings.TrimLeft(v, "-")
+			for _, validOpt := range validOpts {
+				if opt == validOpt {
+					opts = append(opts, v)
+					if argsLength > i+1 {
+						opts = append(opts, args[i+1])
+					}
+				}
+			}
+		}
+
+		// Now lets build a new set of arguments to pass to the root command.
+		// Starting with the command name and the options that we discovered.
+		cmdParts := strings.Split(cmdWithArgs, " ")
+		start := append(cmdParts, opts...)
+
+		// Then we inject a double dash, this gets cobra to ignore everything after it.
+		middle := []string{"--"}
+
+		// And the end of the argument slice is made up of everything else in the orginal args.
+		end := args[len(cmdParts)+len(opts):]
+		args = append(append(start, middle...), end...)
+		break
+	}
+	rootCmd.SetArgs(args)
+
 	// Execute the generated cobra cli app
 	if err := rootCmd.Execute(); err != nil {
 		if !strings.HasPrefix(err.Error(), "unknown") {
@@ -126,4 +202,15 @@ func main() {
 		os.Exit(1)
 	}
 	os.Exit(0)
+}
+
+type byLengthDec []string
+func (s byLengthDec) Len() int {
+    return len(s)
+}
+func (s byLengthDec) Swap(i, j int) {
+    s[i], s[j] = s[j], s[i]
+}
+func (s byLengthDec) Less(i, j int) bool {
+    return len(s[i]) > len(s[j])
 }

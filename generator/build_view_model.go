@@ -17,6 +17,8 @@ type tplViewModel struct {
 
 type tplCommand struct {
 	CmdName          string
+	FullCmdName      string
+	CmdDepth         int
 	FuncName         string
 	CobraCmdName     string
 	ShortDescription string
@@ -47,7 +49,7 @@ func buildViewModel(nodes *ast.Package) (*tplViewModel, error) {
 	viewModel := &tplViewModel{}
 	cmdTree := buildCmdTree(nodes)
 
-	if cmds, err := walkCmdTree(cmdTree, "root"); err == nil {
+	if cmds, err := walkCmdTree(cmdTree, "root", "", 0); err == nil {
 		viewModel.Commands = cmds
 	} else {
 		return nil, err

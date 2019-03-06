@@ -76,6 +76,8 @@ var _ = Describe("buildViewModel", func() {
 			Expect(result.Commands).To(Equal([]*tplCommand{
 				&tplCommand{
 					CmdName:          "foo",
+					FullCmdName:      "foo",
+					CmdDepth:         0,
 					FuncName:         "Foo",
 					CobraCmdName:     "foo",
 					ShortDescription: "",
@@ -121,6 +123,8 @@ var _ = Describe("buildViewModel", func() {
 			Expect(result.Commands).To(ConsistOf(
 				&tplCommand{
 					CmdName:          "foo",
+					FullCmdName:      "foo",
+					CmdDepth:         0,
 					FuncName:         "Foo",
 					CobraCmdName:     "foo",
 					ShortDescription: "",
@@ -134,6 +138,8 @@ var _ = Describe("buildViewModel", func() {
 				},
 				&tplCommand{
 					CmdName:          "bar",
+					FullCmdName:      "bar",
+					CmdDepth:         0,
 					FuncName:         "Bar",
 					CobraCmdName:     "bar",
 					ShortDescription: "",
@@ -179,6 +185,8 @@ var _ = Describe("buildViewModel", func() {
 			Expect(result.Commands).To(Equal([]*tplCommand{
 				&tplCommand{
 					CmdName:          "foo",
+					FullCmdName:      "foo",
+					CmdDepth:         0,
 					FuncName:         "Foo",
 					CobraCmdName:     "foo",
 					ShortDescription: "",
@@ -188,6 +196,8 @@ var _ = Describe("buildViewModel", func() {
 					Commands: []*tplCommand{
 						&tplCommand{
 							CmdName:          "bar",
+							FullCmdName:      "foo bar",
+							CmdDepth:         1,
 							FuncName:         "FooBar",
 							CobraCmdName:     "bar",
 							ShortDescription: "",

@@ -6,10 +6,10 @@ import (
 	"net"
 	"time"
 
+	"github.com/fatih/color"
 	"gopkg.in/brad-jones/gomake.v2/runtime/exec"
 	"gopkg.in/brad-jones/gomake.v2/runtime/print"
 	"gopkg.in/brad-jones/gomake.v2/runtime/run"
-	"github.com/fatih/color"
 )
 
 // Use can optionally be set to customise the generated usage text.
@@ -30,8 +30,8 @@ import (
 // be used.
 var Version = "0.0.0"
 
-// Validparms shows all valid parmeter types
-func Validparms(
+// Validparams shows all valid parameter types
+func Validparams(
 	qux bool,
 	quxArray []bool,
 	foo string,

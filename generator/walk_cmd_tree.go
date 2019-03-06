@@ -9,7 +9,7 @@ import (
 
 var regexpOptDoc = regexp.MustCompile("--(.*?),?:")
 
-func walkCmdTree(tree cmdTree, parentCmdName string) ([]*tplCommand, error) {
+func walkCmdTree(tree cmdTree, parentCmdName, fullCmdName string, depth int) ([]*tplCommand, error) {
 
 	cmds := []*tplCommand{}
 
@@ -18,13 +18,15 @@ func walkCmdTree(tree cmdTree, parentCmdName string) ([]*tplCommand, error) {
 		// Add a new command
 		cmd := &tplCommand{}
 		cmd.CmdName = cmdName
+		cmd.FullCmdName = strings.TrimSpace(fullCmdName + " " + cmdName)
+		cmd.CmdDepth = depth
 		cmd.FuncName = branch.leaf.Name.Name
 		cmd.CobraCmdName = casee.ToCamelCase(cmdName)
 		cmd.ParentCmdName = casee.ToCamelCase(parentCmdName + "Cmd")
 		cmds = append(cmds, cmd)
 
 		// Add any sub commands
-		if subCmds, err := walkCmdTree(branch.branch, cmdName); err == nil {
+		if subCmds, err := walkCmdTree(branch.branch, cmdName, cmd.FullCmdName, depth+1); err == nil {
 			cmd.Commands = subCmds
 		} else {
 			return nil, err

@@ -11,7 +11,7 @@ var _ = Describe("walkCmdTree", func() {
 
 	When("given an empty cmd tree", func() {
 		It("should return no commands", func() {
-			result, err := walkCmdTree(cmdTree{}, "root")
+			result, err := walkCmdTree(cmdTree{}, "root", "", 0)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).To(Equal([]*tplCommand{}))
 		})
@@ -62,11 +62,13 @@ var _ = Describe("walkCmdTree", func() {
 					},
 					branch: cmdTree{},
 				},
-			}, "root")
+			}, "root", "", 0)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).To(Equal([]*tplCommand{
 				&tplCommand{
 					CmdName:          "foo",
+					FullCmdName:      "foo",
+					CmdDepth:         0,
 					FuncName:         "Foo",
 					CobraCmdName:     "foo",
 					ShortDescription: "This is short description",
@@ -117,11 +119,13 @@ var _ = Describe("walkCmdTree", func() {
 					},
 					branch: cmdTree{},
 				},
-			}, "root")
+			}, "root", "", 0)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).To(Equal([]*tplCommand{
 				&tplCommand{
 					CmdName:          "foo",
+					FullCmdName:      "foo",
+					CmdDepth:         0,
 					FuncName:         "Foo",
 					CobraCmdName:     "foo",
 					ShortDescription: "",
@@ -161,11 +165,13 @@ var _ = Describe("walkCmdTree", func() {
 					},
 					branch: cmdTree{},
 				},
-			}, "root")
+			}, "root", "", 0)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).To(Equal([]*tplCommand{
 				&tplCommand{
 					CmdName:          "foo",
+					FullCmdName:      "foo",
+					CmdDepth:         0,
 					FuncName:         "Foo",
 					CobraCmdName:     "foo",
 					ShortDescription: "",
@@ -205,11 +211,13 @@ var _ = Describe("walkCmdTree", func() {
 					},
 					branch: cmdTree{},
 				},
-			}, "root")
+			}, "root", "", 0)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).To(Equal([]*tplCommand{
 				&tplCommand{
 					CmdName:          "foo",
+					FullCmdName:      "foo",
+					CmdDepth:         0,
 					FuncName:         "Foo",
 					CobraCmdName:     "foo",
 					ShortDescription: "",
@@ -249,7 +257,7 @@ var _ = Describe("walkCmdTree", func() {
 					},
 					branch: cmdTree{},
 				},
-			}, "root")
+			}, "root", "", 0)
 			Expect(err).To(HaveOccurred())
 			Expect(err).To(MatchError("gomake: variadic parameters must of type 'string'"))
 		})
@@ -287,7 +295,7 @@ var _ = Describe("walkCmdTree", func() {
 						},
 					},
 				},
-			}, "root")
+			}, "root", "", 0)
 			Expect(err).To(HaveOccurred())
 			Expect(err).To(MatchError("gomake: the flag type 'FooP' is unsupported by gomake and/or cobra"))
 		})
