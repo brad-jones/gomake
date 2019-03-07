@@ -73,6 +73,9 @@ func main() {
 	cmdsWithArgs := []string{}
 	cmdsWithArgsOptions := map[string][]string{}
 	addCmdWithArgs := func(fullCmdName string, options ...string) {
+		if fullCmdName == "" {
+			return
+		}
 		cmdsWithArgs = append(cmdsWithArgs, fullCmdName)
 		cmdsWithArgsOptions[fullCmdName] = []string{}
 		for _, opt := range options {
@@ -84,6 +87,7 @@ func main() {
 			}
 		}
 	}
+	addCmdWithArgs("") // NOTE: We do this so we don't get "addCmdWithArgs declared and not used"
 
 	{{ define "command" }}
 		{{$CobraCmdName := .CobraCmdName}}
