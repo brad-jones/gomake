@@ -94,8 +94,12 @@ func main() {
 		(func() {
 			{{$CobraCmdName}}Cmd := &cobra.Command{}
 			{{$CobraCmdName}}Cmd.Use = "{{.CmdName}}"
-			{{$CobraCmdName}}Cmd.Short = "{{.ShortDescription}}"
-			{{$CobraCmdName}}Cmd.Long = {{$CobraCmdName}}Cmd.Short + "\n{{.LongDescription}}"
+			{{if not (eq .ShortDescription "")}}
+				{{$CobraCmdName}}Cmd.Short = "{{.ShortDescription}}"
+			{{end}}
+			{{if not (eq .LongDescription "")}}
+				{{$CobraCmdName}}Cmd.Long = {{$CobraCmdName}}Cmd.Short + "\n{{.LongDescription}}"
+			{{end}}
 			{{range .Options -}}
 				{{.Name}}Opt := {{$CobraCmdName}}Cmd.Flags().{{.FlagType}}("{{.LongName}}", "{{.ShortName}}", {{.DefaultValue}}, "{{.Description}}")
 			{{end -}}
@@ -108,32 +112,38 @@ func main() {
 					{{end}}
 				)
 			{{end}}
-			{{- $CobraCmdName}}Cmd.Run = func(cmd *cobra.Command, args []string) {
-				ctx, cancel := getContext()
-				defer cancel()
-				var err interface{}
-				d := make(chan interface{})
-				go func() {
-					defer func() {
-						err := recover()
-						d <- err
-					}()
-					{{if .HasErr}}err := {{end}}{{.FuncName}}(
-						{{if .HasCtx}}ctx,{{end}}
-						{{range .Options -}}
-							*{{.Name}}Opt,
-						{{end}}
-						{{- if not .Args.NoArgs}}args...,{{end}}
-					)
-					d <- {{if .HasErr}}err{{else}}nil{{end}}
-				}()
-				select {
-				case <-ctx.Done():
-					panic(ctx.Err())
-				case err = <-d:
-					panic(err)
+			{{if eq .FuncName "gomake_noop"}}
+				{{- $CobraCmdName}}Cmd.Run = func(cmd *cobra.Command, args []string) {
+					cmd.Help()
 				}
-			}
+			{{else}}
+				{{- $CobraCmdName}}Cmd.Run = func(cmd *cobra.Command, args []string) {
+					ctx, cancel := getContext()
+					defer cancel()
+					var err interface{}
+					d := make(chan interface{})
+					go func() {
+						defer func() {
+							err := recover()
+							d <- err
+						}()
+						{{if .HasErr}}err := {{end}}{{.FuncName}}(
+							{{if .HasCtx}}ctx,{{end}}
+							{{range .Options -}}
+								*{{.Name}}Opt,
+							{{end}}
+							{{- if not .Args.NoArgs}}args...,{{end}}
+						)
+						d <- {{if .HasErr}}err{{else}}nil{{end}}
+					}()
+					select {
+					case <-ctx.Done():
+						panic(ctx.Err())
+					case err = <-d:
+						panic(err)
+					}
+				}
+			{{end}}
 			{{- range .Commands}}
 				{{ template "command" . }}
 			{{end}}

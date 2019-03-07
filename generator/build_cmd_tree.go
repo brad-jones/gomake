@@ -40,11 +40,25 @@ func buildCmdTree(nodes *ast.Package) cmdTree {
 				for _, match := range cmdStartsWithNo.FindAllStringSubmatch(cmdName, -1) {
 					cmdName = strings.Replace(cmdName, match[1], strings.TrimPrefix(match[1], "_"), 1)
 				}
-				for _, cmd := range strings.Split(cmdName, "_") {
+				cmdParts := strings.Split(cmdName, "_")
+				cmdPartsLen := len(cmdParts)
+				for i, cmd := range cmdParts {
 					if _, ok := root[cmd]; !ok {
-						root[cmd] = cmdTreeBranch{
-							leaf:   funcDecl,
-							branch: cmdTree{},
+						if i+1 == cmdPartsLen {
+							root[cmd] = cmdTreeBranch{
+								leaf:   funcDecl,
+								branch: cmdTree{},
+							}
+						} else {
+							root[cmd] = cmdTreeBranch{
+								leaf: &ast.FuncDecl{
+									Name: &ast.Ident{
+										Name: "gomake_noop",
+									},
+									Type: &ast.FuncType{},
+								},
+								branch: cmdTree{},
+							}
 						}
 					}
 					root = root[cmd].branch

@@ -145,4 +145,47 @@ var _ = Describe("buildCmdTree", func() {
 		})
 	})
 
+	When("given a single sub cmd function declaration", func() {
+		It("should return a nested cmd tree structure and fill in the parent cmd with a noop", func() {
+			Expect(buildCmdTree(&ast.Package{
+				Name: "main",
+				Files: map[string]*ast.File{
+					"/.gomake/makefile.go": &ast.File{
+						Name: &ast.Ident{
+							Name: "main",
+						},
+						Decls: []ast.Decl{
+							&ast.FuncDecl{
+								Name: &ast.Ident{
+									Name: "FooBar",
+								},
+								Type: &ast.FuncType{},
+							},
+						},
+					},
+				},
+			})).To(Equal(cmdTree{
+				"foo": cmdTreeBranch{
+					leaf: &ast.FuncDecl{
+						Name: &ast.Ident{
+							Name: "gomake_noop",
+						},
+						Type: &ast.FuncType{},
+					},
+					branch: cmdTree{
+						"bar": cmdTreeBranch{
+							leaf: &ast.FuncDecl{
+								Name: &ast.Ident{
+									Name: "FooBar",
+								},
+								Type: &ast.FuncType{},
+							},
+							branch: cmdTree{},
+						},
+					},
+				},
+			}))
+		})
+	})
+
 })
