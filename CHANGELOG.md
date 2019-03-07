@@ -1,3 +1,11 @@
+## [2.2.2](https://github.com/brad-jones/gomake/compare/v2.2.1...v2.2.2) (2019-03-07)
+
+
+### Bug Fixes
+
+* **missing-parent-cmds:** now get filled in automatically by a noop func ([a7421dd](https://github.com/brad-jones/gomake/commit/a7421dd)), closes [#2](https://github.com/brad-jones/gomake/issues/2)
+* **proxy-args:** "addCmdWithArgs declared and not used" error ([cb743ef](https://github.com/brad-jones/gomake/commit/cb743ef))
+
 ## [2.2.1](https://github.com/brad-jones/gomake/compare/v2.2.0...v2.2.1) (2019-03-06)
 
 
