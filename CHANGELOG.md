@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/brad-jones/gomake/compare/v2.2.2...v2.3.0) (2019-03-10)
+
+
+### Features
+
+* **executor:** working dir now set to one level above the ".gomake" dir ([55c33e5](https://github.com/brad-jones/gomake/commit/55c33e5))
+
 ## [2.2.2](https://github.com/brad-jones/gomake/compare/v2.2.1...v2.2.2) (2019-03-07)
 
 
