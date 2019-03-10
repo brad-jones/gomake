@@ -47,6 +47,17 @@ func Execute(dir string, args ...string) error {
 		}
 	}
 
+	// Ensure that the current working directory is one level above the
+	// ".gomake" folder. This makes it easier to write tasks as you can
+	// always rely on the working directory being the solution root for
+	// any given project.
+	//
+	// NOTE: This obviously only changes the working dir for this process
+	//       and has no effect on the users shell.
+	if err := os.Chdir(filepath.Dir(dir)); err != nil {
+		return err
+	}
+
 	if runtime.GOOS == "windows" {
 		cmd := exec.Command(exePath, args...)
 		cmd.Stdin = os.Stdin
