@@ -7,9 +7,9 @@ dependencies:
   '@semantic-release/exec': 3.3.2
   '@semantic-release/git': 7.0.8
   '@semantic-release/release-notes-generator': 7.1.4
-  babel-runtime: 6.26.0
   husky: 1.3.1
   semantic-release: 15.13.3
+lockfileVersion: 5
 packages:
   /@commitlint/cli/7.5.2:
     dependencies:
@@ -190,7 +190,7 @@ packages:
       node: '>= 6'
     resolution:
       integrity: sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
-  /@octokit/endpoint/3.1.3:
+  /@octokit/endpoint/3.2.3:
     dependencies:
       deepmerge: 3.2.0
       is-plain-object: 2.0.4
@@ -198,10 +198,10 @@ packages:
       url-template: 2.0.8
     dev: false
     resolution:
-      integrity: sha512-vAWzeoj9Lzpl3V3YkWKhGzmDUoMfKpyxJhpq74/ohMvmLXDoEuAGnApy/7TRi3OmnjyX2Lr+e9UGGAD0919ohA==
-  /@octokit/request/2.4.1:
+      integrity: sha512-yUPCt4vMIOclox13CUxzuKiPJIFo46b/6GhUnUTw5QySczN1L0DtSxgmIZrZV4SAb9EyAqrceoyrWoYVnfF2AA==
+  /@octokit/request/2.4.2:
     dependencies:
-      '@octokit/endpoint': 3.1.3
+      '@octokit/endpoint': 3.2.3
       deprecation: 1.0.1
       is-plain-object: 2.0.4
       node-fetch: 2.3.0
@@ -209,21 +209,23 @@ packages:
       universal-user-agent: 2.0.3
     dev: false
     resolution:
-      integrity: sha512-nN8W24ZXEpJQJoVgMsGZeK9FOzxkc39Xn9ykseUpPpPMNEDFSvqfkCeqqKrjUiXRm72ubGLWG1SOz0aJPcgGww==
-  /@octokit/rest/16.17.0:
+      integrity: sha512-lxVlYYvwGbKSHXfbPk5vxEA8w4zHOH1wobado4a9EfsyD3Cbhuhus1w0Ye9Ro0eMubGO8kNy5d+xNFisM3Tvaw==
+  /@octokit/rest/16.19.0:
     dependencies:
-      '@octokit/request': 2.4.1
+      '@octokit/request': 2.4.2
       before-after-hook: 1.4.0
       btoa-lite: 1.0.0
+      deprecation: 1.0.1
       lodash.get: 4.4.2
       lodash.set: 4.3.2
       lodash.uniq: 4.5.0
       octokit-pagination-methods: 1.1.0
+      once: 1.4.0
       universal-user-agent: 2.0.3
       url-template: 2.0.8
     dev: false
     resolution:
-      integrity: sha512-1RB7e4ptR/M+1Ik3Qn84pbppbSadBaCtpgFqgqsXn6s4ZVE6hqW9SOm6UW5yd3KT7ObVfdYUkhMlgR937oKyDw==
+      integrity: sha512-mUk/GU2LtV95OAM3FnvK7KFFNzUUzEGFldOhWliJnuhwBqxEag1gW85o//L6YphC9wLoTaZQOhCHmQcsCnt2ag==
   /@semantic-release/changelog/3.0.2:
     dependencies:
       '@semantic-release/error': 2.2.0
@@ -292,7 +294,7 @@ packages:
       integrity: sha512-sA+XoPU6GrV+A4YswO0b5JWL1KbzmyyaqUK6Y2poDkIVPlj+oQdi/stpKz/bKF5z9ChMGP87OVPMeUyXGaNFtw==
   /@semantic-release/github/5.2.10:
     dependencies:
-      '@octokit/rest': 16.17.0
+      '@octokit/rest': 16.19.0
       '@semantic-release/error': 2.2.0
       aggregate-error: 2.2.0
       bottleneck: 2.17.1
@@ -362,7 +364,7 @@ packages:
     dependencies:
       '@types/events': 3.0.0
       '@types/minimatch': 3.0.3
-      '@types/node': 11.11.0
+      '@types/node': 11.11.3
     dev: false
     resolution:
       integrity: sha512-1Bh06cbWJUHMC97acuD6UMG29nMt0Aqz1vF3guLfG+kHHJhy3AyohZFFxYk2f7Q1SQIrNwvncxAE0N/9s70F2w==
@@ -370,10 +372,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
-  /@types/node/11.11.0:
+  /@types/node/11.11.3:
     dev: false
     resolution:
-      integrity: sha512-D5Rt+HXgEywr3RQJcGlZUCTCx1qVbCZpVk3/tOOA6spLNZdGm8BU+zRgdRYDoF1pO3RuXLxADzMrF903JlQXqg==
+      integrity: sha512-wp6IOGu1lxsfnrD+5mX6qwSwWuqsdkKKxTN4aQc4wByHAKZJf9/D4KXPQ1POUjEbnCP5LMggB0OEFNY9OTsMqg==
   /JSONStream/1.3.5:
     dependencies:
       jsonparse: 1.3.1
@@ -505,12 +507,6 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-WWZ/QfrdTyDMvCu5a41Pf3jsA2c=
-  /async/2.6.2:
-    dependencies:
-      lodash: 4.17.11
-    dev: false
-    resolution:
-      integrity: sha512-H1qVYh1MYhEEFLsP97cVKqCGo7KfCyTt6uEWqsTBr9SO84oK9Uwbyd/yCW+6rKJLHksBNUVWZDAjfS+Ccx0Bbg==
   /atob/2.1.2:
     dev: false
     engines:
@@ -753,11 +749,11 @@ packages:
       node: '>=0.1.90'
     resolution:
       integrity: sha1-BDP0TYCWgP3rYO0mDxsMJi6CpAs=
-  /commander/2.17.1:
+  /commander/2.19.0:
     dev: false
     optional: true
     resolution:
-      integrity: sha512-wPMUt6FnH2yzG95SA6mzjQOEKUU3aLaDEmzs1ti+1E9h+CsrZghRlqEM/EJ4KscsQVG8uNN4uVreUeT8+drlgg==
+      integrity: sha512-6tvAOO+D6OENvRAh524Dh9jcfKTYDQAqvqezbCW82xj5X0pSrcpxtvRKHLG0yBY6SD7PSDrJaj+0AiOcKVd1Xg==
   /compare-func/1.3.2:
     dependencies:
       array-ify: 1.0.0
@@ -794,7 +790,7 @@ packages:
       compare-func: 1.3.2
       conventional-commits-filter: 2.0.1
       dateformat: 3.0.3
-      handlebars: 4.1.0
+      handlebars: 4.1.1
       json-stringify-safe: 5.0.1
       lodash: 4.17.11
       meow: 4.0.1
@@ -1360,9 +1356,9 @@ packages:
     dev: false
     resolution:
       integrity: sha512-6uHUhOPEBgQ24HM+r6b/QwWfZq+yiFcipKFrOFiBEnWdy5sdzYoi+pJeQaPI5qOLRFqWmAXUPQNsielzdLoecA==
-  /handlebars/4.1.0:
+  /handlebars/4.1.1:
     dependencies:
-      async: 2.6.2
+      neo-async: 2.6.0
       optimist: 0.6.1
       source-map: 0.6.1
     dev: false
@@ -1370,9 +1366,9 @@ packages:
       node: '>=0.4.7'
     hasBin: true
     optionalDependencies:
-      uglify-js: 3.4.9
+      uglify-js: 3.4.10
     resolution:
-      integrity: sha512-l2jRuU1NAWK6AW5qqcTATWQJvNPEwkM7NEKSiv/gqOsoSQbVoWyqVEY5GS+XPQ88zLNmqASRpzfdm8d79hJS+w==
+      integrity: sha512-3Zhi6C0euYZL5sM0Zcy7lInLXKQ+YLcF/olbN010mzGQ4XVm50JeyBnMqofHh696GrciGruC7kCcApPDJvVgwA==
   /has-flag/2.0.0:
     dev: false
     engines:
@@ -1916,12 +1912,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-sWZlbEP2OsHNkXrMl5GYk/jKk70MBng6UU4YI/qGDYbgf6YbP4EvmqISbXCoJiRKs+1bSpFHVgQxvJ17F2li5g==
-  /macos-release/2.0.0:
+  /macos-release/2.1.0:
     dev: false
     engines:
       node: '>=6'
     resolution:
-      integrity: sha512-iCM3ZGeqIzlrH7KxYK+fphlJpCCczyHXc+HhRVbEu9uNTCrzYJjvvtefzeKTCVHd5AP/aD/fzC80JZ4ZP+dQ/A==
+      integrity: sha512-8TCbwvN1mfNxbBv0yBtfyIFMo3m1QsNbKHv7PYIp/abRBKVQBXN7ecu3aeGGgT18VC/Tf397LBDGZF9KBGJFFw==
   /map-age-cleaner/0.1.3:
     dependencies:
       p-defer: 1.0.0
@@ -1956,7 +1952,7 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
-  /marked-terminal/3.2.0/marked@0.6.1:
+  /marked-terminal/3.2.0_marked@0.6.1:
     dependencies:
       ansi-escapes: 3.2.0
       cardinal: 2.1.1
@@ -1966,7 +1962,6 @@ packages:
       node-emoji: 1.10.0
       supports-hyperlinks: 1.0.1
     dev: false
-    id: registry.npmjs.org/marked-terminal/3.2.0
     peerDependencies:
       marked: ^0.4.0 || ^0.5.0 || ^0.6.0
     resolution:
@@ -1978,16 +1973,16 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-+H0L3ibcWhAZE02SKMqmvYsErLo4EAVJxu5h3bHBBDvvjeWXtl92rGUSBYHL2++5Y+RSNgl8dYOAXcYe7lp1fA==
-  /mem/4.1.0:
+  /mem/4.2.0:
     dependencies:
       map-age-cleaner: 0.1.3
-      mimic-fn: 1.2.0
+      mimic-fn: 2.0.0
       p-is-promise: 2.0.0
     dev: false
     engines:
       node: '>=6'
     resolution:
-      integrity: sha512-I5u6Q1x7wxO0kdOpYBB28xueHADYps5uty/zg936CiG8NTe5sJL8EjrCuLneuDW3PlMdZBGDIn8BirEVdovZvg==
+      integrity: sha512-5fJxa68urlY0Ir8ijatKa3eRz5lwXnRCTvo9+TbTGAuTFJOwpGcY0X05moBd0nW45965Njt4CDI2GFQoG8DvqA==
   /meow/4.0.1:
     dependencies:
       camelcase-keys: 4.2.0
@@ -2053,12 +2048,12 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-ikBcWwyqXQSHKtciCcctu9YfPbFYZ4+gbHEmE0Q8jzcTYQg5dHCr3g2wwAZjPoJfQVXZq6KXAjpXOTf5/cjT7w==
-  /mimic-fn/1.2.0:
+  /mimic-fn/2.0.0:
     dev: false
     engines:
-      node: '>=4'
+      node: '>=6'
     resolution:
-      integrity: sha512-jf84uxzwiuiIVKiOLpfYk7N46TSy8ubTonmneY9vrpHNAnp0QBt2BxWV9dO3/j+BoVAb+a5G6YDPW3M5HOdMWQ==
+      integrity: sha512-jbex9Yd/3lmICXwYT6gA/j2mNQGU48wCh/VzRd+/Y/PjYQtlg1gLMdZqvu9s/xH7qKvngxRObl56XZR609IMbA==
   /minimatch/3.0.4:
     dependencies:
       brace-expansion: 1.1.11
@@ -2134,6 +2129,10 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-fpoe2T0RbHwBTBUOftAfBPaDEi06ufaUai0mE6Yn1kacc3SnTErfb/h+X94VXzI64rKFHYImXSvdwGGCmwOqCA==
+  /neo-async/2.6.0:
+    dev: false
+    resolution:
+      integrity: sha512-MFh0d/Wa7vkKO3Y3LlacqAEeHK0mckVqzDieUKTT+KGxi+zIpeVsFxymkIiRpbpDziHc290Xr9A1O4Om7otoRA==
   /nerf-dart/1.0.0:
     dev: false
     resolution:
@@ -2354,7 +2353,7 @@ packages:
     dependencies:
       execa: 1.0.0
       lcid: 2.0.0
-      mem: 4.1.0
+      mem: 4.2.0
     dev: false
     engines:
       node: '>=6'
@@ -2362,7 +2361,7 @@ packages:
       integrity: sha512-Z8l3R4wYWM40/52Z+S265okfFj8Kt2cC2MKY+xNi3kFs+XGI7WXu/I309QQQYbRW4ijiZ+yxs9pqEhJh0DqW3Q==
   /os-name/3.0.0:
     dependencies:
-      macos-release: 2.0.0
+      macos-release: 2.1.0
       windows-release: 3.1.0
     dev: false
     engines:
@@ -2405,7 +2404,7 @@ packages:
       integrity: sha512-vvcXsLAJ9Dr5rQOPk7toZQZJApBl2K4J6dANSsEuh6QI41JYcsS/qhTGa9ErIUUgK3WNQoJYvylxvjqmiqEA9Q==
   /p-limit/2.2.0:
     dependencies:
-      p-try: 2.0.0
+      p-try: 2.1.0
     dev: false
     engines:
       node: '>=6'
@@ -2453,12 +2452,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-y8ec26+P1CKOE/Yh8rGiN8GyB7M=
-  /p-try/2.0.0:
+  /p-try/2.1.0:
     dev: false
     engines:
       node: '>=6'
     resolution:
-      integrity: sha512-hMp0onDKIajHfIkdRk3P4CdCmErkYAxxDtP3Wx/4nZ3aGlau2VKh3mZpcuFkH27WQkL/3WBCPOktzA9ZOAnMQQ==
+      integrity: sha512-H2RyIJ7+A3rjkwKC2l5GGtU4H1vkxKCAGsWasNVd0Set+6i4znxbWy6/j16YDPJDWxhsgZiKAstMEP8wCdSpjA==
   /parent-module/1.0.0:
     dependencies:
       callsites: 3.0.0
@@ -2805,7 +2804,7 @@ packages:
       hosted-git-info: 2.7.1
       lodash: 4.17.11
       marked: 0.6.1
-      marked-terminal: /marked-terminal/3.2.0/marked@0.6.1
+      marked-terminal: 3.2.0_marked@0.6.1
       p-locate: 3.0.0
       p-reduce: 1.0.0
       read-pkg-up: 4.0.0
@@ -3168,9 +3167,9 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-n5up2e+odkw4dpi8v+sshI8RrbM=
-  /uglify-js/3.4.9:
+  /uglify-js/3.4.10:
     dependencies:
-      commander: 2.17.1
+      commander: 2.19.0
       source-map: 0.6.1
     dev: false
     engines:
@@ -3178,7 +3177,7 @@ packages:
     hasBin: true
     optional: true
     resolution:
-      integrity: sha512-8CJsbKOtEbnJsTyv6LE6m6ZKniqMiFWmm9sRbopbkGs3gMPPfd3Fh8iIA4Ykv5MgaTbqHr4BaoGLJLZNhsrW1Q==
+      integrity: sha512-Y2VsbPVs0FIshJztycsO2SfPk7/KAF/T72qzv9u5EpQ4kB2hQoHlhNQTsNyy6ul7lQtqJN/AoWeS23OzEiEFxw==
   /union-value/1.0.0:
     dependencies:
       arr-union: 3.1.0
@@ -3322,18 +3321,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Lhz8TLaYnxq/2ObqHDql8dX8CJi97oHxrjUcYtzKbbykPtVW9WB+poxI+NM2UIzsMgNCZTIf0AQwsjK5yMAqZw==
-registry: 'https://registry.npmjs.org/'
-shrinkwrapMinorVersion: 9
-shrinkwrapVersion: 3
 specifiers:
-  '@commitlint/cli': ^7.2.1
-  '@commitlint/config-conventional': ^7.1.2
-  '@commitlint/travis-cli': ^7.2.1
-  '@semantic-release/changelog': ^3.0.1
+  '@commitlint/cli': ^7.5.2
+  '@commitlint/config-conventional': ^7.5.0
+  '@commitlint/travis-cli': ^7.5.2
+  '@semantic-release/changelog': ^3.0.2
   '@semantic-release/commit-analyzer': ^6.1.0
-  '@semantic-release/exec': ^3.3.0
-  '@semantic-release/git': ^7.0.5
+  '@semantic-release/exec': ^3.3.2
+  '@semantic-release/git': ^7.0.8
   '@semantic-release/release-notes-generator': ^7.1.4
-  babel-runtime: ^6.26.0
-  husky: ^1.1.4
-  semantic-release: ^15.12.0
+  husky: ^1.3.1
+  semantic-release: ^15.13.3
