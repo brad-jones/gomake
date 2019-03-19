@@ -10,6 +10,8 @@ require (
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
+	github.com/onsi/ginkgo v1.8.0
+	github.com/onsi/gomega v1.5.0
 	github.com/phogolabs/parcello v0.8.1
 	github.com/pinzolo/casee v0.0.0-20160729104318-956b6baf666a
 	github.com/spf13/cobra v0.0.3
