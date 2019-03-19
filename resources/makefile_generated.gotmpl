@@ -71,7 +71,9 @@ func main() {
 	// this treatmeant happens just before we execute the rootCmd. But this
 	// slice is populated by each command definition below.
 	cmdsWithArgs := []string{}
+	cmdsWithOutArgs := []string{}
 	cmdsWithArgsOptions := map[string][]string{}
+	optionsWithValues := map[string][]string{}
 	addCmdWithArgs := func(fullCmdName string, options ...string) {
 		if fullCmdName == "" {
 			return
@@ -87,7 +89,31 @@ func main() {
 			}
 		}
 	}
-	addCmdWithArgs("") // NOTE: We do this so we don't get "addCmdWithArgs declared and not used"
+	addOptionsWithValues := func(fullCmdName string, options ...string) {
+		if fullCmdName == "" {
+			return
+		}
+		optionsWithValues[fullCmdName] = []string{}
+		for _, opt := range options {
+			if opt != "" {
+				optionsWithValues[fullCmdName] = append(
+					optionsWithValues[fullCmdName],
+					opt,
+				)
+			}
+		}
+	}
+	addCmdWithOutArgs := func(fullCmdName string) {
+		if fullCmdName == "" {
+			return
+		}
+		cmdsWithOutArgs = append(cmdsWithOutArgs, fullCmdName)
+	}
+
+	// NOTE: We do this so we don't get declared and not used errors
+	addCmdWithArgs("")
+	addCmdWithOutArgs("")
+	addOptionsWithValues("")
 
 	{{ define "command" }}
 		{{$CobraCmdName := .CobraCmdName}}
@@ -105,10 +131,18 @@ func main() {
 			{{end -}}
 			{{if .Args.NoArgs}}
 				{{- $CobraCmdName}}Cmd.Args = cobra.NoArgs
+				addCmdWithOutArgs("{{.FullCmdName}}")
 			{{else}}
 				addCmdWithArgs("{{.FullCmdName}}",
 					{{range .Options -}}
 						"{{.LongName}}", "{{.ShortName}}",
+					{{end}}
+				)
+				addOptionsWithValues("{{.FullCmdName}}",
+					{{range .Options -}}
+						{{if not (eq .FlagType "BoolP") -}}
+							"{{.LongName}}", "{{.ShortName}}",
+						{{end -}}
 					{{end}}
 				)
 			{{end}}
@@ -165,9 +199,15 @@ func main() {
 	args := os.Args[1:]
 	argsString := strings.Join(args, " ")
 	sort.Sort(byLengthDec(cmdsWithArgs))
+	OUTER:
 	for _, cmdWithArgs := range cmdsWithArgs {
 		if !strings.HasPrefix(argsString, cmdWithArgs) {
 			continue
+		}
+		for _, cmdWithOutArgs := range cmdsWithOutArgs {
+			if strings.HasPrefix(argsString, cmdWithOutArgs) {
+				continue OUTER
+			}
 		}
 
 		// So at this point we have worked out that we are about to execute a
@@ -187,7 +227,12 @@ func main() {
 				if opt == validOpt {
 					opts = append(opts, v)
 					if argsLength > i+1 {
-						opts = append(opts, args[i+1])
+						for _, optWithValue := range optionsWithValues[cmdWithArgs] {
+							if opt == optWithValue {
+								opts = append(opts, args[i+1])
+								break
+							}
+						}
 					}
 				}
 			}
