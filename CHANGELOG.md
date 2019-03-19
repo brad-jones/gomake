@@ -1,3 +1,10 @@
+## [2.3.1](https://github.com/brad-jones/gomake/compare/v2.3.0...v2.3.1) (2019-03-19)
+
+
+### Bug Fixes
+
+* **proxy-args:** in some cases arguments were not being parsed correctly ([18e9c7d](https://github.com/brad-jones/gomake/commit/18e9c7d))
+
 # [2.3.0](https://github.com/brad-jones/gomake/compare/v2.2.2...v2.3.0) (2019-03-10)
 
 
