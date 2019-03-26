@@ -12,9 +12,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spf13/cobra"
 	"github.com/fatih/color"
+	"github.com/spf13/cobra"
+	errors1 "github.com/pkg/errors"
+	errors2 "github.com/go-errors/errors"
 )
+
+type stackTracer interface {
+	StackTrace() errors1.StackTrace
+}
 
 func main() {
 
@@ -22,14 +28,22 @@ func main() {
 
 	// Recover from all panics here to make error handling uniform and maintainable.
 	defer (func() {
-		if err := recover(); err != nil {
+		if err := recover().(error); err != nil {
 			red := color.New(color.FgRed, color.Bold, color.Underline)
 			red.Println("gomake has encountered an error!")
 			fmt.Println(err)
 			fmt.Println()
 			if os.Getenv("GOMAKE_DEBUG") == "1" {
 				red.Println("debug stack trace")
-				debug.PrintStack()
+				if v, ok := errors1.Cause(err).(stackTracer); ok {
+					fmt.Printf("%+v", v.StackTrace())
+				} else {
+					if v, ok := err.(*errors2.Error); ok {
+						fmt.Println(v.ErrorStack())
+					} else {
+						debug.PrintStack()
+					}
+				}
 				fmt.Println()
 			}
 			os.Exit(1)
@@ -157,10 +171,6 @@ func main() {
 					var err interface{}
 					d := make(chan interface{})
 					go func() {
-						defer func() {
-							err := recover()
-							d <- err
-						}()
 						{{if .HasErr}}err := {{end}}{{.FuncName}}(
 							{{if .HasCtx}}ctx,{{end}}
 							{{range .Options -}}

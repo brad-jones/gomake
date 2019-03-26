@@ -2,11 +2,14 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"time"
 
 	"github.com/fatih/color"
+	errors2 "github.com/go-errors/errors"
+	errors1 "github.com/pkg/errors"
 	"gopkg.in/brad-jones/gomake.v2/runtime/exec"
 	"gopkg.in/brad-jones/gomake.v2/runtime/print"
 	"gopkg.in/brad-jones/gomake.v2/runtime/run"
@@ -146,4 +149,85 @@ func RuntimeExample() error {
 		),
 		print.H1("End", color.FgGreen),
 	)()
+}
+
+// ErrorExample shows what happens when a task returns an error
+//
+// This is an example of returning a stdlib error. The fundemental problem with
+// golang errors is that context is often lost. For the same reason gomake now
+// no longer recovers from panics it is suggested to look at using one of:
+//
+//     - <https://github.com/pkg/errors>
+//     - <https://github.com/go-errors/errors>
+//
+// gomake supports returning stack traces from both these types of errors,
+// see ErrorExample1 and ErrorExample2
+//
+// For more reading about this issue:
+// <https://dave.cheney.net/tag/error-handling>
+//
+// > TIP: Set "GOMAKE_DEBUG=1" to see a stack trace.
+func ErrorExample() error {
+	return errors.New("ops we failed for some reason")
+}
+
+// ErrorExample1 shows what happens when a task returns an error
+//
+// This is an example of using <https://github.com/pkg/errors>
+//
+// > TIP: Set "GOMAKE_DEBUG=1" to see a stack trace.
+func ErrorExample1() error {
+	return errors1.New("ops we failed for some reason")
+}
+
+// ErrorExample2 shows what happens when a task returns an error
+//
+// This is an example of using <https://github.com/go-errors/errors>
+//
+// > TIP: Set "GOMAKE_DEBUG=1" to see a stack trace.
+func ErrorExample2() error {
+	return errors2.New("ops we failed for some reason")
+}
+
+// PanicExample shows what happens when a task panics
+//
+// Panics usually mean that something really bad happened, so bad that the
+// application can not (or should not) recover from the error.
+//
+// In older versions of gomake we used to recover from panics and provide a
+// nice "styleized" error message but this leads to issues around debugging.
+// We lose the context (read stack trace) of the panic. And so you ended up
+// with a one line generic error message such as:
+//
+//     interface conversion: interface {} is nil, not string
+//
+// With no way of easily knowing what caused this error.
+//
+// > To clarify, we could still output a stack trace with "GOMAKE_DEBUG=1"
+// > however the stack trace would only go as far as the recover() call in
+// > makefile_generated.go and provide no useful information.
+//
+// Now when a panic occurs the gomake app completely dies there and then and
+// you will see output similar to:
+//
+//     panic: interface conversion: interface {} is nil, not string
+//
+//     goroutine 6 [running]:
+//     foo.bar.pkg/.gomake/utils.GetNpmToken(0xc000037a52, 0x3e, 0xc000037a52, 0x3e, 0x0, 0x0)
+//         /go/src/foo.bar.pkg/.gomake/utils/get_npm_token.go:47 +0x588
+//     foo.bar.pkg/.gomake/utils.buildkitDocker(0xc00032cdb2, 0x5, 0xc000353520, 0x9, 0xc3f01c, 0x3, 0x0, 0xdb52b0, 0xb28fe0)
+//         /go/src/foo.bar.pkg/.gomake/utils/buildkit_docker.go:38 +0x1e2
+//     foo.bar.pkg/.gomake/utils.Build.func1(0x0, 0x0)
+//         /go/src/foo.bar.pkg/.gomake/utils/build.go:35 +0x131
+//     gopkg.in/brad-jones/gomake.v2/runtime/run.Serial.func1(0xc00035b290, 0x11)
+//         /home/brad/.go/pkg/mod/gopkg.in/brad-jones/gomake.v2@v2.3.1/runtime/run/serial.go:8 +0x60
+//     main.Build(0xc00032cdb2, 0x5, 0x0, 0x0, 0x0)
+//         /go/src/foo.bar.pkg/.gomake/build.go:35 +0x69c
+//     main.main.func12.1.1(0xc00033d200, 0xc0003533c9, 0xc00002ea80)
+//         /go/src/foo.bar.pkg/.gomake/makefile_generated.go:1057 +0x43
+//     created by main.main.func12.1
+//         /go/src/foo.bar.pkg/.gomake/makefile_generated.go:1052 +0xcf
+//
+func PanicExample() {
+	panic("ops we failed for some reason")
 }
