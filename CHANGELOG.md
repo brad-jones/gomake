@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/brad-jones/gomake/compare/v2.3.1...v2.4.0) (2019-03-26)
+
+
+### Features
+
+* **error:** handling improvements, no longer recovers from panics ([b53106a](https://github.com/brad-jones/gomake/commit/b53106a))
+
 ## [2.3.1](https://github.com/brad-jones/gomake/compare/v2.3.0...v2.3.1) (2019-03-19)
 
 
