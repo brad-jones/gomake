@@ -1,3 +1,10 @@
+## [2.4.1](https://github.com/brad-jones/gomake/compare/v2.4.0...v2.4.1) (2019-03-27)
+
+
+### Bug Fixes
+
+* **error:** main error recovery method logic improvements ([d33a25a](https://github.com/brad-jones/gomake/commit/d33a25a))
+
 # [2.4.0](https://github.com/brad-jones/gomake/compare/v2.3.1...v2.4.0) (2019-03-26)
 
 
