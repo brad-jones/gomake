@@ -28,23 +28,24 @@ func main() {
 
 	// Recover from all panics here to make error handling uniform and maintainable.
 	defer (func() {
-		if err := recover().(error); err != nil {
+		if err := recover(); err != nil {
 			red := color.New(color.FgRed, color.Bold, color.Underline)
 			red.Println("gomake has encountered an error!")
 			fmt.Println(err)
 			fmt.Println()
 			if os.Getenv("GOMAKE_DEBUG") == "1" {
 				red.Println("debug stack trace")
-				if v, ok := errors1.Cause(err).(stackTracer); ok {
-					fmt.Printf("%+v", v.StackTrace())
-				} else {
-					if v, ok := err.(*errors2.Error); ok {
-						fmt.Println(v.ErrorStack())
-					} else {
-						debug.PrintStack()
+				if errErr, ok := err.(error); ok {
+					if v, ok := errors1.Cause(errErr).(stackTracer); ok {
+						fmt.Printf("%+v", v.StackTrace())
+						os.Exit(1)
 					}
 				}
-				fmt.Println()
+				if v, ok := err.(*errors2.Error); ok {
+					fmt.Println(v.ErrorStack())
+					os.Exit(1)
+				}
+				debug.PrintStack()
 			}
 			os.Exit(1)
 		}
