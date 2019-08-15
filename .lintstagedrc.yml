@@ -1,0 +1,9 @@
+"*.go":
+  - gofmt -s -w
+  - git add
+"*.{json,js}":
+  - prettier --write
+  - git add
+"*.{yml,yaml}":
+  - prettier --write --tab-width 2
+  - git add
