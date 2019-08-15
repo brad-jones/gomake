@@ -10,11 +10,14 @@ Yes TravisCI has also recently added Windows support and is the only other CI
 provider that I know of that offers all 3 major operating systems. However in
 my opinion Azure's offering is better than that offered by Travis.
 
+> UPDATE (August 2019): CircleCI now offer Windows based virtual machines
+> but that is not offered in any free plan.
+
 ## Folder Layout
 
 - `./.azure/executors`:
   Is for any Dockerfiles that might be used for container based jobs.
-  The docker expirence on Azure DevOps is sub optimal but useable if needed.
+  The docker experience on Azure DevOps is sub optimal but useable if needed.
 
 - `./.azure/pipelines`:
   Is where we keep all root pipeline definitions, yes Azure DevOps lets us
