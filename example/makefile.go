@@ -1,4 +1,4 @@
-package main
+package makefile
 
 import (
 	"context"
@@ -7,12 +7,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/fatih/color"
 	errors2 "github.com/go-errors/errors"
 	errors1 "github.com/pkg/errors"
-	"gopkg.in/brad-jones/gomake.v2/runtime/exec"
-	"gopkg.in/brad-jones/gomake.v2/runtime/print"
-	"gopkg.in/brad-jones/gomake.v2/runtime/run"
 )
 
 // Use can optionally be set to customise the generated usage text.
@@ -133,7 +129,7 @@ func Cmdwithquotes() {
 // RuntimeExample is an example of using the gomake/runtime library
 // This is of course completely optional and what you put inside your
 // gomake functions is totally up to you, it's just go afterall.
-func RuntimeExample() error {
+/*func RuntimeExample() error {
 	return run.Serial(
 		print.H1("Start", color.FgRed),
 		SubCmd,
@@ -144,12 +140,12 @@ func RuntimeExample() error {
 			Hyphenated_cmd,
 			Sub,
 			func() error { return Documentedflag("baz") },
-			exec.RunPrefixed("google1", "ping", "-c", "4", "8.8.8.8"),
-			exec.RunPrefixed("google2", "ping", "-c", "4", "8.8.4.4"),
+			goexec.RunPrefixed("google1", "ping", "-c", "4", "8.8.8.8"),
+			goexec.RunPrefixed("google2", "ping", "-c", "4", "8.8.4.4"),
 		),
 		print.H1("End", color.FgGreen),
 	)()
-}
+}*/
 
 // ErrorExample shows what happens when a task returns an error
 //
@@ -219,8 +215,8 @@ func ErrorExample2() error {
 //         /go/src/foo.bar.pkg/.gomake/utils/buildkit_docker.go:38 +0x1e2
 //     foo.bar.pkg/.gomake/utils.Build.func1(0x0, 0x0)
 //         /go/src/foo.bar.pkg/.gomake/utils/build.go:35 +0x131
-//     gopkg.in/brad-jones/gomake.v2/runtime/run.Serial.func1(0xc00035b290, 0x11)
-//         /home/brad/.go/pkg/mod/gopkg.in/brad-jones/gomake.v2@v2.3.1/runtime/run/serial.go:8 +0x60
+//     github.com/brad-jones/gomake/v3/runtime/run.Serial.func1(0xc00035b290, 0x11)
+//         /home/brad/.go/pkg/mod/github.com/brad-jones/gomake/v3@v2.3.1/runtime/run/serial.go:8 +0x60
 //     main.Build(0xc00032cdb2, 0x5, 0x0, 0x0, 0x0)
 //         /go/src/foo.bar.pkg/.gomake/build.go:35 +0x69c
 //     main.main.func12.1.1(0xc00033d200, 0xc0003533c9, 0xc00002ea80)
