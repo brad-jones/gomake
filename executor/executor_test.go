@@ -3,10 +3,16 @@ package executor
 import (
 	"os"
 	"path/filepath"
+	"testing"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
+
+func TestGenerator(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "TestGenerator")
+}
 
 var _ = Describe("findGomakeFolder", func() {
 
