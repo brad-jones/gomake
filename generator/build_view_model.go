@@ -8,11 +8,11 @@ import (
 )
 
 type tplViewModel struct {
-	Use       string
-	Short     string
-	Version   string
-	CacheHash string
-	Commands  []*tplCommand
+	Use                   string
+	Short                 string
+	Version               string
+	MakefilePackageImport string
+	Commands              []*tplCommand
 }
 
 type tplCommand struct {
@@ -44,12 +44,14 @@ type tplArgs struct {
 	NoArgs bool
 }
 
-func buildViewModel(nodes *ast.Package) (*tplViewModel, error) {
+func buildViewModel(packageName string, nodes *ast.Package) (*tplViewModel, error) {
 
-	viewModel := &tplViewModel{}
+	viewModel := &tplViewModel{
+		MakefilePackageImport: packageName + " \"github.com/brad-jones/gomake/v3/example\"",
+	}
 	cmdTree := buildCmdTree(nodes)
 
-	if cmds, err := walkCmdTree(cmdTree, "root", "", 0); err == nil {
+	if cmds, err := walkCmdTree(cmdTree, packageName, "root", "", 0); err == nil {
 		viewModel.Commands = cmds
 	} else {
 		return nil, err

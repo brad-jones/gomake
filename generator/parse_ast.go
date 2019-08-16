@@ -5,9 +5,10 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
+	"strings"
 )
 
-func parseAST(cwd string) (*token.FileSet, *ast.Package, error) {
+func parseAST(cwd string) (*token.FileSet, string, *ast.Package, error) {
 
 	fset := token.NewFileSet()
 
@@ -17,16 +18,18 @@ func parseAST(cwd string) (*token.FileSet, *ast.Package, error) {
 
 	pkgs, err := parser.ParseDir(fset, cwd, ignoreGeneratedMakefile, parser.ParseComments)
 	if err != nil {
-		return nil, nil, &ErrParserFailed{innerError: err}
+		return nil, "", nil, &ErrParserFailed{ /*innerError: err*/ }
 	}
 
-	if pkgs["main"] == nil {
-		return nil, nil, &ErrMainPackageNotFound{}
+	for k, v := range pkgs {
+		if !strings.HasSuffix(k, "_test") {
+			if os.Getenv("GOMAKE_PARSE_DEBUG") == "1" {
+				ast.Print(fset, v)
+			}
+
+			return fset, k, v, nil
+		}
 	}
 
-	if os.Getenv("GOMAKE_PARSE_DEBUG") == "1" {
-		ast.Print(fset, pkgs["main"])
-	}
-
-	return fset, pkgs["main"], nil
+	return nil, "", nil, &ErrMainPackageNotFound{ /*innerError: err*/ }
 }

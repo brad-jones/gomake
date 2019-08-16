@@ -3,6 +3,7 @@ package generator
 import (
 	"crypto/sha1"
 	"fmt"
+	"github.com/brad-jones/goerr"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -37,4 +38,10 @@ func CacheHashGen(dir string) (string, error) {
 	}
 
 	return fmt.Sprintf("%x", h.Sum(nil)), nil
+}
+
+func MustCacheHashGen(dir string) string {
+	v, err := CacheHashGen(dir)
+	goerr.Check(err)
+	return v
 }

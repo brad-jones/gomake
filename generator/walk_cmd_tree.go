@@ -9,7 +9,7 @@ import (
 
 var regexpOptDoc = regexp.MustCompile("--(.*?),?:")
 
-func walkCmdTree(tree cmdTree, parentCmdName, fullCmdName string, depth int) ([]*tplCommand, error) {
+func walkCmdTree(tree cmdTree, packageName, parentCmdName, fullCmdName string, depth int) ([]*tplCommand, error) {
 
 	cmds := []*tplCommand{}
 
@@ -20,13 +20,19 @@ func walkCmdTree(tree cmdTree, parentCmdName, fullCmdName string, depth int) ([]
 		cmd.CmdName = cmdName
 		cmd.FullCmdName = strings.TrimSpace(fullCmdName + " " + cmdName)
 		cmd.CmdDepth = depth
-		cmd.FuncName = branch.leaf.Name.Name
+
+		if branch.leaf.Name.Name != "gomake_noop" {
+			cmd.FuncName = packageName + "." + branch.leaf.Name.Name
+		} else {
+			cmd.FuncName = branch.leaf.Name.Name
+		}
+
 		cmd.CobraCmdName = casee.ToCamelCase(cmdName)
 		cmd.ParentCmdName = casee.ToCamelCase(parentCmdName + "Cmd")
 		cmds = append(cmds, cmd)
 
 		// Add any sub commands
-		if subCmds, err := walkCmdTree(branch.branch, cmdName, cmd.FullCmdName, depth+1); err == nil {
+		if subCmds, err := walkCmdTree(branch.branch, packageName, cmdName, cmd.FullCmdName, depth+1); err == nil {
 			cmd.Commands = subCmds
 		} else {
 			return nil, err
