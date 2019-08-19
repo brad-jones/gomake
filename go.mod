@@ -5,6 +5,7 @@ go 1.12
 require (
 	github.com/brad-jones/goerr v0.0.0-20190620043302-e702e0f33115
 	github.com/brad-jones/goexec v0.0.0-20190626003435-ef3301237e21
+	github.com/coreos/go-systemd v0.0.0-20190719114852-fd7a80b32e1f // indirect
 	github.com/fatih/color v1.7.0
 	github.com/go-errors/errors v1.0.1
 	github.com/onsi/ginkgo v1.8.0
@@ -12,7 +13,16 @@ require (
 	github.com/phogolabs/parcello v0.8.1
 	github.com/pinzolo/casee v0.0.0-20160729104318-956b6baf666a
 	github.com/pkg/errors v0.8.1
+	github.com/rs/zerolog v1.15.0 // indirect
+	github.com/sirkon/goproxy v1.4.0
 	github.com/spf13/cobra v0.0.3
+	github.com/stretchr/objx v0.2.0 // indirect
+	github.com/stretchr/testify v1.4.0 // indirect
+	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
+	golang.org/x/net v0.0.0-20190813141303-74dc4d7220e7 // indirect
+	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
+	golang.org/x/text v0.3.2 // indirect
+	golang.org/x/tools v0.0.0-20190816200558-6889da9d5479 // indirect
 	gopkg.in/brad-jones/gomake.v2 v2.4.1 // indirect
 	gopkg.in/src-d/go-git.v4 v4.10.0
 )

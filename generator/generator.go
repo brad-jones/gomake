@@ -20,6 +20,7 @@ import (
 	"github.com/brad-jones/gomake/v3/resources"
 	"github.com/go-errors/errors"
 	"github.com/pinzolo/casee"
+	"github.com/sirkon/goproxy/gomod"
 	git "gopkg.in/src-d/go-git.v4"
 )
 
@@ -55,25 +56,46 @@ func (g *Generator) MustGenApp(path string) string {
 func (g *Generator) MustGenAppHash(path string) string {
 	var hashContent strings.Builder
 
-	goerr.Check(filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".go") && info.Name() != "makefile_generated.go" {
-			finfo, err := os.Stat(path)
-			if err != nil {
-				return err
-			}
-			hashContent.WriteString(path)
-			hashContent.WriteString(strconv.FormatInt(finfo.ModTime().Unix(), 10))
-		}
-		return nil
-	}))
-
-	h := sha1.New()
-	_, err := h.Write([]byte(hashContent.String()))
+	// First of all we take into account the go.mod (& go.sum if it exists)
+	// This means the moment you import a new package into your task runner
+	// or update an existing one the task runner will get rebuilt.
+	goModPath, goSumPath := g.mustFindGoModSumFiles(path)
+	goModInfo, err := os.Stat(goModPath)
 	goerr.Check(err)
+	hashContent.WriteString(goModPath)
+	hashContent.WriteString(strconv.FormatInt(goModInfo.ModTime().Unix(), 10))
+	if goSumPath != "" {
+		goSumInfo, err := os.Stat(goSumPath)
+		goerr.Check(err)
+		hashContent.WriteString(goSumPath)
+		hashContent.WriteString(strconv.FormatInt(goSumInfo.ModTime().Unix(), 10))
+	}
 
+	// Now we take into account each source file "local" to the go module.
+	// So regardless of how you structure your task runner any changes will be detected.
+	goMod := g.mustParseModFile(goModPath)
+	var recurseAst func(path string)
+	recurseAst = func(path string) {
+		_, nodes := g.mustParseAST(path)
+		for srcFilePath, fileAst := range nodes.Files {
+			fInfo, err := os.Stat(srcFilePath)
+			goerr.Check(err)
+			hashContent.WriteString(srcFilePath)
+			hashContent.WriteString(strconv.FormatInt(fInfo.ModTime().Unix(), 10))
+			for _, importDec := range fileAst.Imports {
+				importPath := strings.ReplaceAll(importDec.Path.Value, "\"", "")
+				if strings.HasPrefix(importPath, goMod.Name) {
+					recurseAst(filepath.Join(filepath.Dir(goModPath), strings.Replace(importPath, goMod.Name, "", 1)))
+				}
+			}
+		}
+	}
+	recurseAst(path)
+
+	// Generate and return a SHA1 hash
+	h := sha1.New()
+	_, err = h.Write([]byte(hashContent.String()))
+	goerr.Check(err)
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
@@ -154,9 +176,51 @@ func (g *Generator) mustBuildCmdTree(nodes *ast.Package) cmdTree {
 	return tree
 }
 
+func (g *Generator) findGoModSumFiles(dir string) (goModPath, goSumPath string, err error) {
+	goModPath = filepath.Join(dir, "go.mod")
+	if _, err := os.Stat(goModPath); err == nil {
+		goSumPath = filepath.Join(dir, "go.sum")
+		if _, err := os.Stat(goSumPath); err == nil {
+			return goModPath, goSumPath, nil
+		}
+		return goModPath, "", nil
+	}
+	if dir == filepath.VolumeName(dir)+string(os.PathSeparator) {
+		return "", "", errors.New(ErrReachedRootOfFs)
+	}
+	parentDir := filepath.Join(dir, "..")
+	return g.findGoModSumFiles(parentDir)
+}
+
+func (g *Generator) mustFindGoModSumFiles(dir string) (goModPath, goSumPath string) {
+	goModPath, goSumPath, err := g.findGoModSumFiles(dir)
+	goerr.Check(err)
+	return
+}
+
+func (g *Generator) mustParseModFile(path string) *gomod.Module {
+	dat, err := ioutil.ReadFile(path)
+	goerr.Check(err)
+	mod, err := gomod.Parse(path, dat)
+	goerr.Check(err)
+	return mod
+}
+
+func (g *Generator) mustGetModulePath(nodes *ast.Package) string {
+	for srcFilePath := range nodes.Files {
+		goModPath, _ := g.mustFindGoModSumFiles(filepath.Dir(srcFilePath))
+		mod := g.mustParseModFile(goModPath)
+		goModDir := filepath.Dir(goModPath)
+		srcFileDir := filepath.Dir(srcFilePath)
+		diff := strings.Replace(srcFileDir, goModDir, "", 1)
+		return mod.Name + diff
+	}
+	panic(errors.New("gomake: could not get go.mod path"))
+}
+
 func (g *Generator) mustBuildViewModel(packageName string, nodes *ast.Package) *tplViewModel {
 	viewModel := &tplViewModel{
-		MakefilePackageImport: packageName + " \"github.com/brad-jones/gomake/v3/example\"", // TODO
+		MakefilePackageImport: packageName + " \"" + g.mustGetModulePath(nodes) + "\"",
 	}
 	cmdTree := g.mustBuildCmdTree(nodes)
 	viewModel.Commands = g.mustWalkCmdTree(cmdTree, packageName, "root", "", 0)
