@@ -1,19 +1,18 @@
-package executor
+package executor_test
 
 import (
-	"os"
-	"path/filepath"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-func TestGenerator(t *testing.T) {
+func TestExecutor(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "TestGenerator")
+	RunSpecs(t, "TestExecutor")
 }
 
+/*
 var _ = Describe("findGomakeFolder", func() {
 
 	When("given a dir that contains a .gomake folder", func() {
@@ -47,3 +46,4 @@ var _ = Describe("findGomakeFolder", func() {
 	})
 
 })
+*/

@@ -8,41 +8,75 @@ import (
 	"syscall"
 
 	"github.com/brad-jones/goerr"
-	"github.com/brad-jones/gomake/v3/generator"
+	"github.com/go-errors/errors"
 )
 
-func Execute(cwd string, args ...string) (err error) {
+// Executor is a class like object, create new instances with `executor.New()`
+type Executor struct {
+	searchDir string
+	g         Generator
+}
+
+// New creates an instance of `Executor`
+func New(g Generator) *Executor {
+	return &Executor{
+		g: g,
+	}
+}
+
+// SetSearchDir accepts a path that will be used as the starting point for
+// looking for a "makefile.go". If not set this will default to the current
+// working directory.
+func (e *Executor) SetSearchDir(path string) *Executor {
+	e.searchDir = path
+	return e
+}
+
+// GetSearchDir a path that will be used as the starting point for looking for
+// a "makefile.go". If not set this will default to the current working directory.
+func (e *Executor) GetSearchDir() (path string, err error) {
 	defer goerr.Handle(func(e error) {
-		if e != nil {
-			if _, ok := err.(*exec.ExitError); ok {
-				os.Exit(1)
-			}
-		}
+		path = ""
 		err = e
 	})
-
-	// Find the folder that contains a valid gomake task runner
-	dir := mustFindGomakeFolder(cwd)
-
-	// Generate a hash of this task runner
-	hash := generator.MustCacheHashGen(dir)
-
-	// Create the path to the task runner executable
-	homeDir, err := os.UserHomeDir()
-	goerr.Check(err)
-	exePath := filepath.Join(homeDir, ".gomake", hash)
-	if runtime.GOOS == "windows" {
-		exePath = exePath + ".exe"
+	if e.searchDir == "" {
+		dir, err := os.Getwd()
+		goerr.Check(err)
+		e.searchDir = dir
 	}
+	path = e.searchDir
+	return
+}
 
-	// If it does not exist we need to build it
+// MustGetSearchDir does the same thing as GetSearchDir but panics if an error is encountered
+func (e *Executor) MustGetSearchDir() string {
+	path, err := e.GetSearchDir()
+	goerr.Check(err)
+	return path
+}
+
+// Execute orchestrates the process of generating, compiling and running a
+// gomake "makefile.go" task runner. It takes the arguments that will be passed
+// on to the compiled task runner.
+func (e *Executor) Execute(args ...string) (err error) {
+	defer goerr.Handle(func(e error) {
+		err = errors.Wrap(e, 0)
+	})
+
+	dir := e.mustFindGomakeFolder(e.MustGetSearchDir())
+	hash := e.g.MustGenAppHash(dir)
+	exePath := e.mustGetTaskRunnerExePath(hash)
+
+	// We need to build a new task runner to execute
 	if !fileExists(exePath) {
-		generator.MustGenerate(dir)
-		cmd := exec.Command("go", "build", "-o", exePath, filepath.Join(dir, ".gomake"))
+		appPath := e.g.MustGenApp(dir)
+		cmd := exec.Command("go", "build", "-o", exePath, appPath)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		goerr.Check(cmd.Run())
-		goerr.Check(os.RemoveAll(filepath.Join(dir, ".gomake")))
+		if os.Getenv("GOMAKE_PARSE_DEBUG") != "1" {
+			goerr.Check(os.RemoveAll(appPath))
+		}
 	}
 
 	// Ensure that the current working directory is the same as the
@@ -62,48 +96,64 @@ func Execute(cwd string, args ...string) (err error) {
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
-		goerr.Check(cmd.Run())
-	} else {
-		newArgs := []string{exePath}
-		newArgs = append(newArgs, args...)
-		goerr.Check(syscall.Exec(exePath, newArgs, os.Environ()))
+		if err := cmd.Run(); err != nil {
+			if _, ok := err.(*exec.ExitError); ok {
+				os.Exit(1)
+			}
+			goerr.Check(err)
+		}
+		os.Exit(0)
 	}
 
-	return err
+	newArgs := []string{exePath}
+	newArgs = append(newArgs, args...)
+	goerr.Check(syscall.Exec(exePath, newArgs, os.Environ()))
+
+	return
 }
 
-// ErrReachedRootOfFs is returned when findGoMakeFolder can not find a
-// valid "makefile.go" file after having recursed all the way up to the
-// root of filesystem.
-type ErrReachedRootOfFs struct {
+// MustExecute does the same thing as Execute but panics if an error is encountered
+func (e *Executor) MustExecute(args ...string) {
+	goerr.Check(e.Execute(args...))
 }
 
-func (e *ErrReachedRootOfFs) Error() string {
-	return "gomake: failed to find a valid 'makefile.go', reached root of filesystem"
-}
-
-func findGomakeFolder(dir string) (string, error) {
+func (e *Executor) findGomakeFolder(dir string) (string, error) {
 	goMakeFile := filepath.Join(dir, "makefile.go")
 	if _, err := os.Stat(goMakeFile); err == nil {
 		return dir, nil
 	}
 	if dir == filepath.VolumeName(dir)+string(os.PathSeparator) {
-		return "", &ErrReachedRootOfFs{}
+		return "", errors.New(ErrReachedRootOfFs)
 	}
 	parentDir := filepath.Join(dir, "..")
-	return findGomakeFolder(parentDir)
+	return e.findGomakeFolder(parentDir)
 }
 
-func mustFindGomakeFolder(dir string) string {
-	v, e := findGomakeFolder(dir)
-	goerr.Check(e)
+func (e *Executor) mustFindGomakeFolder(dir string) string {
+	v, err := e.findGomakeFolder(dir)
+	goerr.Check(err)
 	return v
 }
 
-func fileExists(filename string) bool {
-	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		return false
+func (e *Executor) getTaskRunnerExePath(hash string) (path string, err error) {
+	defer goerr.Handle(func(e error) {
+		path = ""
+		err = e
+	})
+
+	homeDir, err := os.UserHomeDir()
+	goerr.Check(err)
+
+	path = filepath.Join(homeDir, ".gomake", hash)
+	if runtime.GOOS == "windows" {
+		path = path + ".exe"
 	}
-	return !info.IsDir()
+
+	return
+}
+
+func (e *Executor) mustGetTaskRunnerExePath(hash string) string {
+	v, err := e.getTaskRunnerExePath(hash)
+	goerr.Check(err)
+	return v
 }

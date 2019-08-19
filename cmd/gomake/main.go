@@ -3,8 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 
+	"github.com/brad-jones/goerr"
 	"github.com/brad-jones/gomake/v3/executor"
+	"github.com/brad-jones/gomake/v3/generator"
+	"github.com/fatih/color"
 )
 
 // Injected by ldflags
@@ -17,7 +21,22 @@ var (
 )
 
 func main() {
-	// TODO: Figure out what error handling looks like now...
+	// Recover from all panics here to make error handling uniform and maintainable.
+	defer goerr.Handle(func(err error) {
+		red := color.New(color.FgRed, color.Bold, color.Underline)
+		red.Println("gomake has encountered an error!")
+		fmt.Println(err)
+		fmt.Println()
+		if os.Getenv("GOMAKE_DEBUG") == "1" {
+			red.Println("debug stack trace")
+			if stackTrace, _ := goerr.Trace(err); stackTrace != "" {
+				fmt.Println(stackTrace)
+			} else {
+				debug.PrintStack()
+			}
+		}
+		os.Exit(1)
+	})
 
 	// As this executable is just a proxy for the underlying task runner we
 	// don't want to provide too much custom functionality (cli options/arguments)
@@ -30,18 +49,8 @@ func main() {
 		os.Exit(0)
 	}
 
-	// Grab the current working dir, the executor uses this to find a makefile.go file
-	cwd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
 	// Call the executor, which locates a makefile.go file, then calls the
 	// generator and finally executes the task runner. Caching and other things
 	// happen, for more details see the source of the respective packages.
-	if err := executor.Execute(cwd, os.Args[1:]...); err != nil {
-		panic(err)
-	}
-
-	os.Exit(0)
+	executor.New(generator.New()).MustExecute(os.Args[1:]...)
 }
