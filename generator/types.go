@@ -29,8 +29,6 @@ type tplCommand struct {
 	Args             *tplArgs
 	Commands         []*tplCommand
 	ParentCmdName    string
-	HasCtx           bool
-	HasErr           bool
 }
 
 type tplOption struct {

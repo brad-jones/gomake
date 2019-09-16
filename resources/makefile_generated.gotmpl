@@ -3,7 +3,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"runtime/debug"
@@ -11,45 +10,32 @@ import (
 	"strings"
 	"time"
 
+	"github.com/brad-jones/goerr"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-	errors1 "github.com/pkg/errors"
-	errors2 "github.com/go-errors/errors"
 	{{.MakefilePackageImport}}
 )
-
-type stackTracer interface {
-	StackTrace() errors1.StackTrace
-}
 
 func main() {
 
 	rootCmd := &cobra.Command{}
 
 	// Recover from all panics here to make error handling uniform and maintainable.
-	defer (func() {
-		if err := recover(); err != nil {
-			red := color.New(color.FgRed, color.Bold, color.Underline)
-			red.Println("gomake has encountered an error!")
-			fmt.Println(err)
-			fmt.Println()
-			if os.Getenv("GOMAKE_DEBUG") == "1" {
-				red.Println("debug stack trace")
-				if errErr, ok := err.(error); ok {
-					if v, ok := errors1.Cause(errErr).(stackTracer); ok {
-						fmt.Printf("%+v", v.StackTrace())
-						os.Exit(1)
-					}
-				}
-				if v, ok := err.(*errors2.Error); ok {
-					fmt.Println(v.ErrorStack())
-					os.Exit(1)
-				}
+	defer goerr.Handle(func(err error) {
+		red := color.New(color.FgRed, color.Bold, color.Underline)
+		red.Println("gomake has encountered an error!")
+		fmt.Println(err)
+		fmt.Println()
+		if os.Getenv("GOMAKE_DEBUG") == "1" {
+			red.Println("debug stack trace")
+			if stackTrace, _ := goerr.Trace(err); stackTrace != "" {
+				fmt.Println(stackTrace)
+			} else {
 				debug.PrintStack()
 			}
-			os.Exit(1)
 		}
-	})()
+		os.Exit(1)
+	})
 
 	rootCmd.Use = "{{.Use}}"
 	rootCmd.Short = "{{.Short}}"
@@ -68,23 +54,9 @@ func main() {
 		"Set this to a value parsable by https://golang.org/pkg/time/#ParseDuration",
 	)
 
-	// Use locally scoped functions as to not conflict with actual gomake functions
-	getContext := func() (context.Context, func()) {
-		ctx := context.Background()
-		ctxCancel := func() {}
-		if *rootCmdTimeout != "" {
-			timeout, err := time.ParseDuration(*rootCmdTimeout)
-			if err != nil {
-				panic(err)
-			}
-			ctx, ctxCancel = context.WithTimeout(ctx, timeout)
-		}
-		return ctx, ctxCancel
-	}
-
 	// Commands with arguments get special treatment to the incomming os.Args,
-	// this treatmeant happens just before we execute the rootCmd. But this
-	// slice is populated by each command definition below.
+	// this treatmeant happens just before we execute the rootCmd. These slices
+	// are populated by each command definition below.
 	cmdsWithArgs := []string{}
 	cmdsWithOutArgs := []string{}
 	cmdsWithArgsOptions := map[string][]string{}
@@ -167,25 +139,18 @@ func main() {
 				}
 			{{else}}
 				{{- $CobraCmdName}}Cmd.Run = func(cmd *cobra.Command, args []string) {
-					ctx, cancel := getContext()
-					defer cancel()
-					var err interface{}
-					d := make(chan interface{})
-					go func() {
-						{{if .HasErr}}err := {{end}}{{.FuncName}}(
-							{{if .HasCtx}}ctx,{{end}}
-							{{range .Options -}}
-								*{{.Name}}Opt,
-							{{end}}
-							{{- if not .Args.NoArgs}}args...,{{end}}
-						)
-						d <- {{if .HasErr}}err{{else}}nil{{end}}
-					}()
-					select {
-					case <-ctx.Done():
-						panic(ctx.Err())
-					case err = <-d:
-						panic(err)
+					t := {{.FuncName}}(
+						{{range .Options -}}
+							*{{.Name}}Opt,
+						{{end}}
+						{{- if not .Args.NoArgs}}args...,{{end}}
+					)
+					if *rootCmdTimeout != "" {
+						timeout, err := time.ParseDuration(*rootCmdTimeout)
+						goerr.Check(err)
+						t.MustResultWithTimeout(timeout, 1*time.Second)
+					} else {
+						t.MustResult()
 					}
 				}
 			{{end}}
@@ -267,7 +232,7 @@ func main() {
 	// Execute the generated cobra cli app
 	if err := rootCmd.Execute(); err != nil {
 		if !strings.HasPrefix(err.Error(), "unknown") {
-			panic(err)
+			goerr.Check(err)
 		}
 		os.Exit(1)
 	}

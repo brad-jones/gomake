@@ -4,9 +4,10 @@ package makefile
 // changes to this file should trigger a rebuild.
 
 import (
+	"github.com/brad-jones/goasync/task"
 	makeprja "github.com/brad-jones/gomake/v3/example/a-project"
 )
 
-func BuildProjectA() {
-	makeprja.BuildProjectA()
+func BuildProjectA() *task.Task {
+	return makeprja.BuildProjectA()
 }

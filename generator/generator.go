@@ -350,11 +350,6 @@ func (g *Generator) mustWalkCmdTree(tree cmdTree, packageName, parentCmdName, fu
 
 				typeName, isArray, isPositional := g.mustGetTypeFromAstNode(param)
 
-				if typeName == "Context" {
-					cmd.HasCtx = true
-					continue
-				}
-
 				if isPositional {
 					if typeName != "string" {
 						goerr.Check(errors.New(ErrVariadicMustBeString))
@@ -391,7 +386,7 @@ func (g *Generator) mustWalkCmdTree(tree cmdTree, packageName, parentCmdName, fu
 		}
 
 		if branch.leaf.Type.Results != nil {
-			cmd.HasErr = true
+			//cmd.HasErr = true
 		}
 	}
 
@@ -461,13 +456,12 @@ func (g *Generator) mustGetTypeFromAstNode(node *ast.Field) (typeName string, is
 func (g *Generator) isValidGoMakeFunc(funcDecl *ast.FuncDecl) bool {
 	firstFuncChar := string(funcDecl.Name.Name[0])
 	if strings.ToUpper(firstFuncChar) == firstFuncChar {
-		if funcDecl.Type.Results == nil {
-			return true
-		}
 		if len(funcDecl.Type.Results.List) == 1 {
-			if r, ok := funcDecl.Type.Results.List[0].Type.(*ast.Ident); ok {
-				if r.Name == "error" {
-					return true
+			if r, ok := funcDecl.Type.Results.List[0].Type.(*ast.StarExpr); ok {
+				if x, ok := r.X.(*ast.SelectorExpr); ok {
+					if x.Sel.Name == "Task" {
+						return true
+					}
 				}
 			}
 		}
